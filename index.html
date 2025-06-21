@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-21 10:02 EDT -->
+    <!-- Force Rebuild: 2025-06-21 10:51 EDT -->
     <div class="container">
         <div class="language-switch">
             <button data-lang="en" onclick="switchLanguage('en')">English</button>
@@ -137,10 +137,12 @@
             let currentLang = 'en';
 
             function switchLanguage(lang) {
-                if (lang === currentLang) return; // Prevent redundant switch
+                if (!lang || lang === currentLang) return; // Prevent redundant switch
                 currentLang = lang;
-                document.querySelectorAll('[lang]').forEach(el => el.classList.remove('active'));
-                document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active'));
+                document.querySelectorAll('[lang]').forEach(el => {
+                    el.classList.remove('active');
+                    if (el.getAttribute('lang') === lang) el.classList.add('active');
+                });
                 console.log(`Switched to ${lang}`);
             }
 
@@ -157,14 +159,21 @@
 
             // Attach event listeners to language buttons
             document.querySelectorAll('[data-lang]').forEach(button => {
-                button.addEventListener('click', () => switchLanguage(button.getAttribute('data-lang')));
+                button.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default if needed
+                    switchLanguage(button.getAttribute('data-lang'));
+                });
             });
 
             // Attach event listener to quiz buttons
             document.querySelectorAll('[data-action="quiz"]').forEach(button => {
-                button.addEventListener('click', showQuiz);
+                button.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default if needed
+                    showQuiz();
+                });
             });
 
+            // Handle form submission
             const assessmentForm = document.getElementById('assessmentForm');
             if (assessmentForm) {
                 assessmentForm.addEventListener('submit', function(e) {
@@ -173,21 +182,30 @@
                     const formData = new FormData(this);
                     const data = Object.fromEntries(formData);
 
-                    if (!data.weight || !data.height || !data.age) {
+                    // Validate required fields
+                    if (!data.weight || !data.height || !data.age || !data.gender || !data.activityLevel || !data.bodyType || !data.goal || !data.mealPrefs) {
                         console.error('Missing required fields');
                         document.getElementById('jsError').style.display = 'block';
                         return;
                     }
 
-                    let proteinTarget = data.weight * 0.8;
+                    // Calculate nutrition and activity targets
+                    let proteinTarget = parseFloat(data.weight) * 0.8;
                     let carbLimit = 50;
-                    let fatTarget = (data.weight * 0.5) / 9;
-                    let activityFactor = {'everyday': 1.5, '1-2week': 1.2, 'couplemonth': 1.0}[data.activityLevel] || 1.0;
-                    let calories = (data.weight * 25 * activityFactor) + (proteinTarget * 4) + (carbLimit * 4) + (fatTarget * 9);
+                    let fatTarget = (parseFloat(data.weight) * 0.5) / 9;
+                    let activityFactor = {
+                        'everyday': 1.5,
+                        '1-2week': 1.2,
+                        'couplemonth': 1.0
+                    }[data.activityLevel] || 1.0;
+                    let calories = (parseFloat(data.weight) * 25 * activityFactor) + (proteinTarget * 4) + (carbLimit * 4) + (fatTarget * 9);
 
-                    let mealPlan = generateMealPlan(data.mealPrefs.split(','), data.goal);
+                    // Generate meal plan
+                    let mealPlan = generateMealPlan(data.mealPrefs.split(',').map(p => p.trim()), data.goal);
+                    // Generate exercise plan
                     let exercisePlan = generateExercisePlan(data.activityLevel, data.goal);
 
+                    // Display results
                     const planDetailsEn = document.querySelector('#planDetails[lang="en"]');
                     const planDetailsZh = document.querySelector('#planDetails[lang="zh"]');
                     const downloadLink = document.getElementById('downloadLink');
