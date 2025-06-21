@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-21 13:22 EDT -->
+    <!-- Force Rebuild: 2025-06-21 13:27 EDT -->
     <div class="container">
         <div class="language-switch">
             <button data-lang="en" onclick="switchLanguage('en')">English</button>
@@ -139,21 +139,20 @@
         function switchLanguage(lang) {
             if (!lang || lang === currentLang) return;
             currentLang = lang;
-            try {
-                document.querySelectorAll('[lang]').forEach(el => {
-                    el.classList.remove('active');
-                    if (el.getAttribute('lang') === lang) el.classList.add('active');
-                });
-                console.log(`Switched to ${lang}`);
-                // Verify switch
-                const activeElements = document.querySelectorAll(`[lang="${lang}"].active`);
-                if (activeElements.length === 0) {
-                    console.warn('No active elements found, forcing fallback');
-                    document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active'));
-                }
-            } catch (error) {
-                console.error('Switch language error:', error);
+            const elements = document.querySelectorAll('[lang]');
+            if (!elements.length) {
+                console.error('No language elements found');
                 document.getElementById('jsError').style.display = 'block';
+                return;
+            }
+            elements.forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('lang') === lang) el.classList.add('active');
+            });
+            console.log(`Switched to ${lang}, active elements: ${document.querySelectorAll('[lang].active').length}`);
+            if (document.querySelectorAll('[lang].active').length === 0) {
+                document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active'));
+                console.log(`Fallback applied for ${lang}`);
             }
         }
 
