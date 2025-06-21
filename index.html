@@ -26,8 +26,8 @@
         <h1 lang="zh">欢迎体验 KetoFit 计划</h1>
         <p lang="en">Discover a sustainable path to your ideal weight, toned physique, and lean body with our Keto-carnivore based meal and exercise plans, powered by big data and AI.</p>
         <p lang="zh">通过我们的 Keto-carnivore 饮食和锻炼计划，结合大数据和人工智能技术，探索通往理想体重、紧实身材和健美身形的可持续路径。</p>
-        <button lang="en" onclick="showQuiz()">Take the Quiz</button>
-        <button lang="zh" onclick="showQuiz()">开始测评</button>
+        <button id="quizButton" lang="en" onclick="showQuiz()">Take the Quiz</button>
+        <button id="quizButton" lang="zh" onclick="showQuiz()">开始测评</button>
 
         <div id="quiz" class="quiz">
             <h2 lang="en">Personal Assessment Quiz</h2>
@@ -137,10 +137,20 @@
                 const quiz = document.getElementById('quiz');
                 if (quiz) {
                     quiz.classList.add('active');
-                    console.log('Quiz displayed');
+                    console.log('Quiz displayed successfully');
                 } else {
                     console.error('Quiz element not found');
+                    document.getElementById('jsError').style.display = 'block';
                 }
+            }
+
+            const quizButton = document.getElementById('quizButton');
+            if (quizButton) {
+                quizButton.addEventListener('click', showQuiz);
+                console.log('Quiz button event listener added');
+            } else {
+                console.error('Quiz button not found');
+                document.getElementById('jsError').style.display = 'block';
             }
 
             const assessmentForm = document.getElementById('assessmentForm');
@@ -151,72 +161,13 @@
                     const formData = new FormData(this);
                     const data = Object.fromEntries(formData);
 
-                    // Validate input
                     if (!data.weight || !data.height || !data.age) {
                         console.error('Missing required fields');
                         document.getElementById('jsError').style.display = 'block';
                         return;
                     }
 
-                    // Rule-based logic for plan generation
-                    let proteinTarget = data.weight * 0.8; // 0.8g protein per kg
-                    let carbLimit = 50; // grams
-                    let fatTarget = (data.weight * 0.5) / 9; // ~0.5g fat per kg
-                    let activityFactor = {'everyday': 1.5, '1-2week': 1.2, 'couplemonth': 1.0}[data.activityLevel] || 1.0;
-                    let calories = (data.weight * 25 * activityFactor) + (proteinTarget * 4) + (carbLimit * 4) + (fatTarget * 9);
-
-                    let mealPlan = generateMealPlan(data.mealPrefs.split(','), data.goal);
-                    let exercisePlan = generateExercisePlan(data.activityLevel, data.goal);
-
-                    const planDetailsEn = document.querySelector('#planDetails[lang="en"]');
-                    const planDetailsZh = document.querySelector('#planDetails[lang="zh"]');
-                    const downloadLink = document.getElementById('downloadLink');
-                    if (planDetailsEn && planDetailsZh && downloadLink) {
-                        planDetailsEn.innerHTML = `
-                            <h3>Meal Plan</h3><p>Target: ${proteinTarget.toFixed(1)}g protein, ${carbLimit}g carbs, ${fatTarget.toFixed(1)}g fat daily. Calories: ${calories.toFixed(0)}.<br>${mealPlan}</p>
-                            <h3>Exercise Plan</h3><p>${exercisePlan}</p>
-                            <p>Payment required to download. Click <a href="mailto:support@ketofit.com?subject=Purchase Plan">here</a> to pay and receive your plan via email.</p>
-                        `;
-                        planDetailsZh.innerHTML = `
-                            <h3>饮食计划</h3><p>目标: 每日 ${proteinTarget.toFixed(1)}克蛋白质，${carbLimit}克碳水化合物，${fatTarget.toFixed(1)}克脂肪。热量: ${calories.toFixed(0)}。<br>${mealPlan}</p>
-                            <h3>锻炼计划</h3><p>${exercisePlan}</p>
-                            <p>需要支付才能下载。点击<a href="mailto:support@ketofit.com?subject=Purchase Plan">这里</a>支付并通过电子邮件接收您的计划。</p>
-                        `;
-                        document.getElementById('results').classList.add('active');
-                        downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`KetoFit Plan\n\n${currentLang === 'en' ? planDetailsEn.innerHTML : planDetailsZh.innerHTML}`);
-                        console.log('Plan generated and displayed');
-                    } else {
-                        console.error('Plan details or download link not found');
-                        document.getElementById('jsError').style.display = 'block';
-                    }
-                });
-            } else {
-                console.error('Assessment form not found');
-                document.getElementById('jsError').style.display = 'block';
-            }
-
-            function generateMealPlan(preferences, goal) {
-                const meals = {
-                    breakfast: ['Scrambled Eggs with Bacon (20g protein, 2g carbs, 15g fat, 20m)', 'Keto Cottage Cheese Pancakes (15g protein, 5g carbs, 10g fat, 25m)'],
-                    lunch: ['Beef Stir-Fry with Broccoli (25g protein, 10g carbs, 20g fat, 30m)', 'Chicken Thigh with Spinach (30g protein, 5g carbs, 25g fat, 35m)'],
-                    dinner: ['Pork Ribs with Cauliflower Mash (35g protein, 8g carbs, 30g fat, 40m)', 'Salmon with Asparagus (28g protein, 6g carbs, 22g fat, 35m)'],
-                    dessert: ['Cream Cheese Fat Bombs (5g protein, 2g carbs, 15g fat, 15m)', 'Cottage Cheese Chocolate Mousse (10g protein, 4g carbs, 12g fat, 20m)']
-                };
-                return `Sample Day: ${meals.breakfast[0]}, ${meals.lunch[1]}, ${meals.dinner[0]}, ${meals.dessert[1]}. Adjust based on ${preferences.join(', ')} and ${goal}. All meals use China-available ingredients.`;
-            }
-
-            function generateExercisePlan(activityLevel, goal) {
-                const exercises = {
-                    warmup: ['Jumping Jacks (2m)', 'Arm Circles (2m)'],
-                    bodyweight: ['Squats (3x15)', 'Push-Ups (3x10)', 'Plank (3x30s)'],
-                    gym: ['Leg Press (3x12)', 'Bench Press (3x10)', 'Lat Pulldown (3x12)']
-                };
-                return `Warm-up: ${exercises.warmup[0]}. Bodyweight: ${exercises.bodyweight.join(', ')} (${activityLevel} frequency). Gym Option: ${exercises.gym.join(', ')}. Focus: ${goal}, adaptable for all fitness levels.`;
-            }
-
-            // Initialize with English
-            document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('active'));
-        });
-    </script>
-</body>
-</html>
+                    let proteinTarget = data.weight * 0.8;
+                    let carbLimit = 50;
+                    let fatTarget = (data.weight * 0.5) / 9;
+                    let activityFactor = {'everyday': 1.5, '1-2week': 1.2, 'couplemonth':
