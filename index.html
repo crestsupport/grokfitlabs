@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-21 10:51 EDT -->
+    <!-- Force Rebuild: 2025-06-21 12:05 EDT -->
     <div class="container">
         <div class="language-switch">
             <button data-lang="en" onclick="switchLanguage('en')">English</button>
@@ -137,13 +137,17 @@
             let currentLang = 'en';
 
             function switchLanguage(lang) {
-                if (!lang || lang === currentLang) return; // Prevent redundant switch
+                if (!lang || lang === currentLang) return;
                 currentLang = lang;
-                document.querySelectorAll('[lang]').forEach(el => {
+                const elements = document.querySelectorAll('[lang]');
+                elements.forEach(el => {
                     el.classList.remove('active');
-                    if (el.getAttribute('lang') === lang) el.classList.add('active');
+                    if (el.getAttribute('lang') === lang) {
+                        el.classList.add('active');
+                        console.log(`Activated ${lang} element:`, el.tagName);
+                    }
                 });
-                console.log(`Switched to ${lang}`);
+                console.log(`Switched to ${lang} - Active elements:`, document.querySelectorAll('[lang].active').length);
             }
 
             function showQuiz() {
@@ -160,15 +164,20 @@
             // Attach event listeners to language buttons
             document.querySelectorAll('[data-lang]').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevent default if needed
-                    switchLanguage(button.getAttribute('data-lang'));
+                    e.preventDefault();
+                    const lang = button.getAttribute('data-lang');
+                    if (lang) {
+                        switchLanguage(lang);
+                    } else {
+                        console.error('No data-lang attribute on button', button);
+                    }
                 });
             });
 
             // Attach event listener to quiz buttons
             document.querySelectorAll('[data-action="quiz"]').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevent default if needed
+                    e.preventDefault();
                     showQuiz();
                 });
             });
@@ -178,27 +187,41 @@
             if (assessmentForm) {
                 assessmentForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    console.log('Form submitted');
+                    console.log('Form submitted, data:', this.elements);
                     const formData = new FormData(this);
                     const data = Object.fromEntries(formData);
 
                     // Validate required fields
-                    if (!data.weight || !data.height || !data.age || !data.gender || !data.activityLevel || !data.bodyType || !data.goal || !data.mealPrefs) {
-                        console.error('Missing required fields');
+                    const requiredFields = ['weight', 'height', 'age', 'gender', 'activityLevel', 'bodyType', 'goal', 'mealPrefs'];
+                    const missingFields = requiredFields.filter(field => !data[field]);
+                    if (missingFields.length > 0) {
+                        console.error('Missing required fields:', missingFields);
+                        document.getElementById('jsError').style.display = 'block';
+                        return;
+                    }
+
+                    // Convert numeric fields to floats
+                    const numericData = {
+                        weight: parseFloat(data.weight),
+                        height: parseFloat(data.height),
+                        age: parseFloat(data.age)
+                    };
+                    if (Object.values(numericData).some(value => isNaN(value))) {
+                        console.error('Invalid numeric data:', numericData);
                         document.getElementById('jsError').style.display = 'block';
                         return;
                     }
 
                     // Calculate nutrition and activity targets
-                    let proteinTarget = parseFloat(data.weight) * 0.8;
+                    let proteinTarget = numericData.weight * 0.8;
                     let carbLimit = 50;
-                    let fatTarget = (parseFloat(data.weight) * 0.5) / 9;
+                    let fatTarget = (numericData.weight * 0.5) / 9;
                     let activityFactor = {
                         'everyday': 1.5,
                         '1-2week': 1.2,
                         'couplemonth': 1.0
                     }[data.activityLevel] || 1.0;
-                    let calories = (parseFloat(data.weight) * 25 * activityFactor) + (proteinTarget * 4) + (carbLimit * 4) + (fatTarget * 9);
+                    let calories = (numericData.weight * 25 * activityFactor) + (proteinTarget * 4) + (carbLimit * 4) + (fatTarget * 9);
 
                     // Generate meal plan
                     let mealPlan = generateMealPlan(data.mealPrefs.split(',').map(p => p.trim()), data.goal);
@@ -224,7 +247,7 @@
                         downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`KetoFit Plan\n\n${currentLang === 'en' ? planDetailsEn.innerHTML : planDetailsZh.innerHTML}`);
                         console.log('Plan generated and displayed');
                     } else {
-                        console.error('Plan details or download link not found');
+                        console.error('Plan details or download link not found:', { planDetailsEn, planDetailsZh, downloadLink });
                         document.getElementById('jsError').style.display = 'block';
                     }
                 });
