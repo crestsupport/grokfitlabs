@@ -12,6 +12,7 @@
         .quiz.active, .results.active { display: block; }
         [lang]:not(.active) { display: none !important; }
         button { padding: 10px; margin: 5px; }
+        .error { color: red; }
     </style>
 </head>
 <body>
@@ -101,6 +102,7 @@
                 <button type="submit" lang="en">Submit</button>
                 <button type="submit" lang="zh">提交</button>
             </form>
+            <p class="error" id="jsError" style="display:none;">JavaScript is required for this quiz. Please enable it in your browser.</p>
         </div>
 
         <div id="results" class="results">
@@ -129,10 +131,20 @@
             document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active'));
         }
 
-        function showQuiz() { document.getElementById('quiz').classList.add('active'); }
-        document.getElementById('assessmentForm').addEventListener('submit', function(e) {
+        function showQuiz() {
+            const quiz = document.getElementById('quiz');
+            if (quiz) quiz.classList.add('active');
+            else console.error('Quiz element not found');
+        }
+
+        document.getElementById('assessmentForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
+            const form = this;
+            if (!form) {
+                document.getElementById('jsError').style.display = 'block';
+                return;
+            }
+            const formData = new FormData(form);
             const data = Object.fromEntries(formData);
 
             // Simple rule-based logic for plan generation (simulating ML/AI)
@@ -149,25 +161,30 @@
             // Display results in selected language
             const planDetailsEn = document.querySelector('#planDetails[lang="en"]');
             const planDetailsZh = document.querySelector('#planDetails[lang="zh"]');
-            planDetailsEn.innerHTML = `
-                <h3>Meal Plan</h3><p>Target: ${proteinTarget.toFixed(1)}g protein, ${carbLimit}g carbs, ${fatTarget.toFixed(1)}g fat daily. Calories: ${calories.toFixed(0)}.<br>${mealPlan}</p>
-                <h3>Exercise Plan</h3><p>${exercisePlan}</p>
-                <p>Payment required to download. Click <a href="mailto:support@ketofit.com?subject=Purchase Plan">here</a> to pay and receive your plan via email.</p>
-            `;
-            planDetailsZh.innerHTML = `
-                <h3>饮食计划</h3><p>目标: 每日 ${proteinTarget.toFixed(1)}克蛋白质，${carbLimit}克碳水化合物，${fatTarget.toFixed(1)}克脂肪。热量: ${calories.toFixed(0)}。<br>${mealPlan}</p>
-                <h3>锻炼计划</h3><p>${exercisePlan}</p>
-                <p>需要支付才能下载。点击<a href="mailto:support@ketofit.com?subject=Purchase Plan">这里</a>支付并通过电子邮件接收您的计划。</p>
-            `;
-            document.getElementById('results').classList.add('active');
+            if (planDetailsEn && planDetailsZh) {
+                planDetailsEn.innerHTML = `
+                    <h3>Meal Plan</h3><p>Target: ${proteinTarget.toFixed(1)}g protein, ${carbLimit}g carbs, ${fatTarget.toFixed(1)}g fat daily. Calories: ${calories.toFixed(0)}.<br>${mealPlan}</p>
+                    <h3>Exercise Plan</h3><p>${exercisePlan}</p>
+                    <p>Payment required to download. Click <a href="mailto:support@ketofit.com?subject=Purchase Plan">here</a> to pay and receive your plan via email.</p>
+                `;
+                planDetailsZh.innerHTML = `
+                    <h3>饮食计划</h3><p>目标: 每日 ${proteinTarget.toFixed(1)}克蛋白质，${carbLimit}克碳水化合物，${fatTarget.toFixed(1)}克脂肪。热量: ${calories.toFixed(0)}。<br>${mealPlan}</p>
+                    <h3>锻炼计划</h3><p>${exercisePlan}</p>
+                    <p>需要支付才能下载。点击<a href="mailto:support@ketofit.com?subject=Purchase Plan">这里</a>支付并通过电子邮件接收您的计划。</p>
+                `;
+                document.getElementById('results').classList.add('active');
+            } else {
+                console.error('Plan details elements not found');
+            }
 
             // Simulate download (replace with email trigger in production)
             const downloadContent = currentLang === 'en' ? planDetailsEn.innerHTML : planDetailsZh.innerHTML;
-            document.getElementById('downloadLink').href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`KetoFit Plan\n\n${downloadContent}`);
+            const downloadLink = document.getElementById('downloadLink');
+            if (downloadLink) downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`KetoFit Plan\n\n${downloadContent}`);
+            else console.error('Download link not found');
         });
 
         function generateMealPlan(preferences, goal) {
-            // Static meal database (expandable with JSON, China-available ingredients)
             const meals = {
                 breakfast: ['Scrambled Eggs with Bacon (20g protein, 2g carbs, 15g fat, 20m)', 'Keto Cottage Cheese Pancakes (15g protein, 5g carbs, 10g fat, 25m)'],
                 lunch: ['Beef Stir-Fry with Broccoli (25g protein, 10g carbs, 20g fat, 30m)', 'Chicken Thigh with Spinach (30g protein, 5g carbs, 25g fat, 35m)'],
@@ -185,6 +202,9 @@
             };
             return `Warm-up: ${exercises.warmup[0]}. Bodyweight: ${exercises.bodyweight.join(', ')} (${activityLevel} frequency). Gym Option: ${exercises.gym.join(', ')}. Focus: ${goal}, adaptable for all fitness levels.`;
         }
+
+        // Initialize with English
+        document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('active'));
     </script>
 </body>
 </html>
