@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-21 12:05 EDT -->
+    <!-- Force Rebuild: 2025-06-21 12:48 EDT -->
     <div class="container">
         <div class="language-switch">
             <button data-lang="en" onclick="switchLanguage('en')">English</button>
@@ -139,42 +139,37 @@
             function switchLanguage(lang) {
                 if (!lang || lang === currentLang) return;
                 currentLang = lang;
-                const elements = document.querySelectorAll('[lang]');
-                elements.forEach(el => {
+                document.querySelectorAll('[lang]').forEach(el => {
                     el.classList.remove('active');
-                    if (el.getAttribute('lang') === lang) {
-                        el.classList.add('active');
-                        console.log(`Activated ${lang} element:`, el.tagName);
-                    }
+                    if (el.getAttribute('lang') === lang) el.classList.add('active');
                 });
-                console.log(`Switched to ${lang} - Active elements:`, document.querySelectorAll('[lang].active').length);
+                console.log(`Switched to ${lang}`);
+                // Fallback to ensure at least one language is active
+                if (!document.querySelector('[lang].active')) {
+                    document.querySelectorAll(`[lang="${currentLang}"]`).forEach(el => el.classList.add('active'));
+                    console.log(`Fallback activated ${currentLang}`);
+                }
             }
 
             function showQuiz() {
                 const quiz = document.getElementById('quiz');
                 if (quiz) {
                     quiz.classList.add('active');
-                    console.log('Quiz displayed successfully');
+                    console.log('Quiz displayed');
                 } else {
                     console.error('Quiz element not found');
                     document.getElementById('jsError').style.display = 'block';
                 }
             }
 
-            // Attach event listeners to language buttons
+            // Attach event listeners
             document.querySelectorAll('[data-lang]').forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const lang = button.getAttribute('data-lang');
-                    if (lang) {
-                        switchLanguage(lang);
-                    } else {
-                        console.error('No data-lang attribute on button', button);
-                    }
+                    switchLanguage(button.getAttribute('data-lang'));
                 });
             });
 
-            // Attach event listener to quiz buttons
             document.querySelectorAll('[data-action="quiz"]').forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -182,50 +177,45 @@
                 });
             });
 
-            // Handle form submission
             const assessmentForm = document.getElementById('assessmentForm');
             if (assessmentForm) {
-                assessmentForm.addEventListener('submit', function(e) {
+                assessmentForm.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    console.log('Form submitted, data:', this.elements);
-                    const formData = new FormData(this);
+                    console.log('Form submitted');
+                    const formData = new FormData(assessmentForm);
                     const data = Object.fromEntries(formData);
 
-                    // Validate required fields
-                    const requiredFields = ['weight', 'height', 'age', 'gender', 'activityLevel', 'bodyType', 'goal', 'mealPrefs'];
-                    const missingFields = requiredFields.filter(field => !data[field]);
-                    if (missingFields.length > 0) {
-                        console.error('Missing required fields:', missingFields);
+                    // Validate all required fields
+                    const required = ['gender', 'age', 'height', 'weight', 'activityLevel', 'bodyType', 'goal', 'mealPrefs'];
+                    const missing = required.filter(field => !data[field] || data[field].trim() === '');
+                    if (missing.length > 0) {
+                        console.error('Missing fields:', missing);
+                        document.getElementById('jsError').textContent = `Please fill all fields: ${missing.join(', ')}.`;
                         document.getElementById('jsError').style.display = 'block';
                         return;
                     }
 
-                    // Convert numeric fields to floats
-                    const numericData = {
-                        weight: parseFloat(data.weight),
-                        height: parseFloat(data.height),
-                        age: parseFloat(data.age)
-                    };
-                    if (Object.values(numericData).some(value => isNaN(value))) {
-                        console.error('Invalid numeric data:', numericData);
-                        document.getElementById('jsError').style.display = 'block';
-                        return;
+                    // Convert and validate numeric fields
+                    const numericFields = { weight: data.weight, height: data.height, age: data.age };
+                    for (let field in numericFields) {
+                        numericFields[field] = parseFloat(numericFields[field]);
+                        if (isNaN(numericFields[field])) {
+                            console.error(`${field} is not a number`);
+                            document.getElementById('jsError').textContent = `${field} must be a number.`;
+                            document.getElementById('jsError').style.display = 'block';
+                            return;
+                        }
                     }
 
-                    // Calculate nutrition and activity targets
-                    let proteinTarget = numericData.weight * 0.8;
+                    // Calculate targets
+                    let proteinTarget = numericFields.weight * 0.8;
                     let carbLimit = 50;
-                    let fatTarget = (numericData.weight * 0.5) / 9;
-                    let activityFactor = {
-                        'everyday': 1.5,
-                        '1-2week': 1.2,
-                        'couplemonth': 1.0
-                    }[data.activityLevel] || 1.0;
-                    let calories = (numericData.weight * 25 * activityFactor) + (proteinTarget * 4) + (carbLimit * 4) + (fatTarget * 9);
+                    let fatTarget = (numericFields.weight * 0.5) / 9;
+                    let activityFactor = { 'everyday': 1.5, '1-2week': 1.2, 'couplemonth': 1.0 }[data.activityLevel] || 1.0;
+                    let calories = (numericFields.weight * 25 * activityFactor) + (proteinTarget * 4) + (carbLimit * 4) + (fatTarget * 9);
 
-                    // Generate meal plan
+                    // Generate plans
                     let mealPlan = generateMealPlan(data.mealPrefs.split(',').map(p => p.trim()), data.goal);
-                    // Generate exercise plan
                     let exercisePlan = generateExercisePlan(data.activityLevel, data.goal);
 
                     // Display results
@@ -245,14 +235,16 @@
                         `;
                         document.getElementById('results').classList.add('active');
                         downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`KetoFit Plan\n\n${currentLang === 'en' ? planDetailsEn.innerHTML : planDetailsZh.innerHTML}`);
-                        console.log('Plan generated and displayed');
+                        console.log('Results displayed');
                     } else {
-                        console.error('Plan details or download link not found:', { planDetailsEn, planDetailsZh, downloadLink });
+                        console.error('Failed to find result elements:', { planDetailsEn, planDetailsZh, downloadLink });
+                        document.getElementById('jsError').textContent = 'Error displaying results. Check console.';
                         document.getElementById('jsError').style.display = 'block';
                     }
                 });
             } else {
                 console.error('Assessment form not found');
+                document.getElementById('jsError').textContent = 'Form not loaded correctly.';
                 document.getElementById('jsError').style.display = 'block';
             }
 
