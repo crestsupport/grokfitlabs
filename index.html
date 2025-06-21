@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-21 12:48 EDT -->
+    <!-- Force Rebuild: 2025-06-21 13:22 EDT -->
     <div class="container">
         <div class="language-switch">
             <button data-lang="en" onclick="switchLanguage('en')">English</button>
@@ -105,7 +105,7 @@
                 <button type="submit" lang="en">Submit</button>
                 <button type="submit" lang="zh">提交</button>
             </form>
-            <p class="error" id="jsError" style="display:none;">JavaScript is required for this quiz. Please enable it in your browser or check the console for errors.</p>
+            <p class="error" id="jsError" style="display:none;">JavaScript error. Check console for details.</p>
         </div>
 
         <div id="results" class="results">
@@ -133,36 +133,62 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let currentLang = 'en';
+        // Global functions
+        let currentLang = 'en';
 
-            function switchLanguage(lang) {
-                if (!lang || lang === currentLang) return;
-                currentLang = lang;
+        function switchLanguage(lang) {
+            if (!lang || lang === currentLang) return;
+            currentLang = lang;
+            try {
                 document.querySelectorAll('[lang]').forEach(el => {
                     el.classList.remove('active');
                     if (el.getAttribute('lang') === lang) el.classList.add('active');
                 });
                 console.log(`Switched to ${lang}`);
-                // Fallback to ensure at least one language is active
-                if (!document.querySelector('[lang].active')) {
-                    document.querySelectorAll(`[lang="${currentLang}"]`).forEach(el => el.classList.add('active'));
-                    console.log(`Fallback activated ${currentLang}`);
+                // Verify switch
+                const activeElements = document.querySelectorAll(`[lang="${lang}"].active`);
+                if (activeElements.length === 0) {
+                    console.warn('No active elements found, forcing fallback');
+                    document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active'));
                 }
+            } catch (error) {
+                console.error('Switch language error:', error);
+                document.getElementById('jsError').style.display = 'block';
             }
+        }
 
-            function showQuiz() {
-                const quiz = document.getElementById('quiz');
-                if (quiz) {
-                    quiz.classList.add('active');
-                    console.log('Quiz displayed');
-                } else {
-                    console.error('Quiz element not found');
-                    document.getElementById('jsError').style.display = 'block';
-                }
+        function showQuiz() {
+            const quiz = document.getElementById('quiz');
+            if (quiz) {
+                quiz.classList.add('active');
+                console.log('Quiz displayed');
+            } else {
+                console.error('Quiz element not found');
+                document.getElementById('jsError').style.display = 'block';
             }
+        }
 
-            // Attach event listeners
+        function generateMealPlan(preferences, goal) {
+            const meals = {
+                breakfast: ['Scrambled Eggs with Bacon (20g protein, 2g carbs, 15g fat, 20m)', 'Keto Cottage Cheese Pancakes (15g protein, 5g carbs, 10g fat, 25m)'],
+                lunch: ['Beef Stir-Fry with Broccoli (25g protein, 10g carbs, 20g fat, 30m)', 'Chicken Thigh with Spinach (30g protein, 5g carbs, 25g fat, 35m)'],
+                dinner: ['Pork Ribs with Cauliflower Mash (35g protein, 8g carbs, 30g fat, 40m)', 'Salmon with Asparagus (28g protein, 6g carbs, 22g fat, 35m)'],
+                dessert: ['Cream Cheese Fat Bombs (5g protein, 2g carbs, 15g fat, 15m)', 'Cottage Cheese Chocolate Mousse (10g protein, 4g carbs, 12g fat, 20m)']
+            };
+            return `Sample Day: ${meals.breakfast[0]}, ${meals.lunch[1]}, ${meals.dinner[0]}, ${meals.dessert[1]}. Adjust based on ${preferences.join(', ')} and ${goal}. All meals use China-available ingredients.`;
+        }
+
+        function generateExercisePlan(activityLevel, goal) {
+            const exercises = {
+                warmup: ['Jumping Jacks (2m)', 'Arm Circles (2m)'],
+                bodyweight: ['Squats (3x15)', 'Push-Ups (3x10)', 'Plank (3x30s)'],
+                gym: ['Leg Press (3x12)', 'Bench Press (3x10)', 'Lat Pulldown (3x12)']
+            };
+            return `Warm-up: ${exercises.warmup[0]}. Bodyweight: ${exercises.bodyweight.join(', ')} (${activityLevel} frequency). Gym Option: ${exercises.gym.join(', ')}. Focus: ${goal}, adaptable for all fitness levels.`;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('[data-lang]').forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -181,11 +207,11 @@
             if (assessmentForm) {
                 assessmentForm.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    console.log('Form submitted');
+                    console.log('Form submitted, data:', new FormData(assessmentForm));
                     const formData = new FormData(assessmentForm);
                     const data = Object.fromEntries(formData);
 
-                    // Validate all required fields
+                    // Validate required fields
                     const required = ['gender', 'age', 'height', 'weight', 'activityLevel', 'bodyType', 'goal', 'mealPrefs'];
                     const missing = required.filter(field => !data[field] || data[field].trim() === '');
                     if (missing.length > 0) {
@@ -195,7 +221,7 @@
                         return;
                     }
 
-                    // Convert and validate numeric fields
+                    // Validate numeric fields
                     const numericFields = { weight: data.weight, height: data.height, age: data.age };
                     for (let field in numericFields) {
                         numericFields[field] = parseFloat(numericFields[field]);
@@ -246,25 +272,6 @@
                 console.error('Assessment form not found');
                 document.getElementById('jsError').textContent = 'Form not loaded correctly.';
                 document.getElementById('jsError').style.display = 'block';
-            }
-
-            function generateMealPlan(preferences, goal) {
-                const meals = {
-                    breakfast: ['Scrambled Eggs with Bacon (20g protein, 2g carbs, 15g fat, 20m)', 'Keto Cottage Cheese Pancakes (15g protein, 5g carbs, 10g fat, 25m)'],
-                    lunch: ['Beef Stir-Fry with Broccoli (25g protein, 10g carbs, 20g fat, 30m)', 'Chicken Thigh with Spinach (30g protein, 5g carbs, 25g fat, 35m)'],
-                    dinner: ['Pork Ribs with Cauliflower Mash (35g protein, 8g carbs, 30g fat, 40m)', 'Salmon with Asparagus (28g protein, 6g carbs, 22g fat, 35m)'],
-                    dessert: ['Cream Cheese Fat Bombs (5g protein, 2g carbs, 15g fat, 15m)', 'Cottage Cheese Chocolate Mousse (10g protein, 4g carbs, 12g fat, 20m)']
-                };
-                return `Sample Day: ${meals.breakfast[0]}, ${meals.lunch[1]}, ${meals.dinner[0]}, ${meals.dessert[1]}. Adjust based on ${preferences.join(', ')} and ${goal}. All meals use China-available ingredients.`;
-            }
-
-            function generateExercisePlan(activityLevel, goal) {
-                const exercises = {
-                    warmup: ['Jumping Jacks (2m)', 'Arm Circles (2m)'],
-                    bodyweight: ['Squats (3x15)', 'Push-Ups (3x10)', 'Plank (3x30s)'],
-                    gym: ['Leg Press (3x12)', 'Bench Press (3x10)', 'Lat Pulldown (3x12)']
-                };
-                return `Warm-up: ${exercises.warmup[0]}. Bodyweight: ${exercises.bodyweight.join(', ')} (${activityLevel} frequency). Gym Option: ${exercises.gym.join(', ')}. Focus: ${goal}, adaptable for all fitness levels.`;
             }
 
             // Initialize with English
