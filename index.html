@@ -37,7 +37,9 @@
             }
 
             // Initialize with English
-            document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('active'));
+            window.onload = function() {
+                document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('active'));
+            };
         </script>
     </div>
 </body>
