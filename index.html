@@ -3,132 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The KetoFit Program</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #fff; color: #000; }
-        .container { max-width: 800px; margin: auto; }
-        .language-switch { margin-bottom: 20px; }
-        .quiz, .results { display: none; }
-        .quiz.active, .results.active { display: block; }
-        [lang]:not(.active) { display: none !important; }
-        button { padding: 10px; margin: 5px; cursor: pointer; background: #f0f0f0; border: 1px solid #ccc; }
-        .error { color: red; }
-    </style>
+    <title>Test Page</title>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-22 09:40 EDT -->
-    <div class="container">
-        <div class="language-switch">
-            <button data-lang="en" onclick="switchLanguage('en')">English</button>
-            <button data-lang="zh" onclick="switchLanguage('zh')">简体中文</button>
-        </div>
-
-        <h1 lang="en">Welcome to The KetoFit Program</h1>
-        <h1 lang="zh">欢迎体验 KetoFit 计划</h1>
-        <p lang="en">Test page.</p>
-        <p lang="zh">测试页面。</p>
-        <button data-action="quiz" onclick="showQuiz()">Take the Quiz</button>
-
-        <div id="quiz" class="quiz">
-            <h2 lang="en">Quiz</h2>
-            <h2 lang="zh">测评</h2>
-            <form id="assessmentForm">
-                <label lang="en">Name: <input type="text" name="name" required></label>
-                <label lang="zh">姓名: <input type="text" name="name" required></label><br>
-                <button type="submit">Submit</button>
-            </form>
-            <p class="error" id="jsError" style="display:none;">JavaScript error. Check console.</p>
-        </div>
-
-        <div id="results" class="results">
-            <h2 lang="en">Results</h2>
-            <h2 lang="zh">结果</h2>
-            <p id="planDetails" lang="en"></p>
-            <p id="planDetails" lang="zh"></p>
-        </div>
-    </div>
+    <!-- Force Rebuild: 2025-06-22 09:50 EDT -->
+    <h1>Test Page</h1>
+    <button onclick="testJavaScript()">Click Me</button>
+    <p id="result"></p>
 
     <script>
         console.log('Script loaded at:', new Date().toLocaleTimeString());
 
-        let currentLang = 'en';
-
-        function switchLanguage(lang) {
-            if (!lang || lang === currentLang) return;
-            currentLang = lang;
-            console.log('Switching to:', lang);
-            try {
-                document.querySelectorAll('[lang]').forEach(el => {
-                    el.classList.remove('active');
-                    if (el.getAttribute('lang') === lang) el.classList.add('active');
-                });
-                console.log('Switched, active elements:', document.querySelectorAll('[lang].active').length);
-            } catch (error) {
-                console.error('Switch error:', error);
-                document.getElementById('jsError').textContent = 'Switch failed: ' + error.message;
-                document.getElementById('jsError').style.display = 'block';
-            }
-        }
-
-        function showQuiz() {
-            const quiz = document.getElementById('quiz');
-            if (quiz) {
-                quiz.classList.add('active');
-                console.log('Quiz shown');
-            } else {
-                console.error('Quiz not found');
-                document.getElementById('jsError').textContent = 'Quiz not found';
-                document.getElementById('jsError').style.display = 'block';
-            }
+        function testJavaScript() {
+            console.log('Button clicked at:', new Date().toLocaleTimeString());
+            document.getElementById('result').textContent = 'JavaScript is working!';
+            alert('JavaScript is running!');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM loaded at:', new Date().toLocaleTimeString());
-            document.querySelectorAll('[data-lang]').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Language button clicked:', button.getAttribute('data-lang'));
-                    switchLanguage(button.getAttribute('data-lang'));
-                });
-            });
-
-            document.querySelectorAll('[data-action="quiz"]').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Quiz button clicked');
-                    showQuiz();
-                });
-            });
-
-            const form = document.getElementById('assessmentForm');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    console.log('Form submitted at:', new Date().toLocaleTimeString());
-                    const formData = new FormData(form);
-                    const data = Object.fromEntries(formData);
-                    console.log('Form data:', data);
-                    const planDetailsEn = document.querySelector('#planDetails[lang="en"]');
-                    const planDetailsZh = document.querySelector('#planDetails[lang="zh"]');
-                    if (planDetailsEn && planDetailsZh) {
-                        planDetailsEn.textContent = `Hello, ${data.name}!`;
-                        planDetailsZh.textContent = `你好，${data.name}!`;
-                        document.getElementById('results').classList.add('active');
-                        console.log('Results displayed at:', new Date().toLocaleTimeString());
-                    } else {
-                        console.error('Results section not found');
-                        document.getElementById('jsError').textContent = 'Results not loaded';
-                        document.getElementById('jsError').style.display = 'block';
-                    }
-                });
-            } else {
-                console.error('Form not found');
-                document.getElementById('jsError').textContent = 'Form not found';
-                document.getElementById('jsError').style.display = 'block';
-            }
-
-            document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('active'));
-            console.log('English active, count:', document.querySelectorAll('[lang].active').length);
         });
     </script>
 </body>
