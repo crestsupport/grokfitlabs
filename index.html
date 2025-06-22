@@ -13,12 +13,10 @@
         [lang]:not(.active) { display: none !important; }
         button { padding: 10px; margin: 5px; cursor: pointer; background: #f0f0f0; border: 1px solid #ccc; }
         .error { color: red; }
-        .links { margin-top: 20px; }
-        a { margin-right: 10px; }
     </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-22 09:08 EDT -->
+    <!-- Force Rebuild: 2025-06-22 09:40 EDT -->
     <div class="container">
         <div class="language-switch">
             <button data-lang="en" onclick="switchLanguage('en')">English</button>
@@ -27,150 +25,48 @@
 
         <h1 lang="en">Welcome to The KetoFit Program</h1>
         <h1 lang="zh">欢迎体验 KetoFit 计划</h1>
-        <p lang="en">Embrace an ancestral carnivore-keto lifestyle with personalized plans.</p>
-        <p lang="zh">拥抱祖先肉食-生酮生活方式，享受个性化计划。</p>
-        <button data-action="quiz" lang="en" onclick="showQuiz()">Take the Quiz</button>
-        <button data-action="quiz" lang="zh" onclick="showQuiz()">开始测评</button>
+        <p lang="en">Test page.</p>
+        <p lang="zh">测试页面。</p>
+        <button data-action="quiz" onclick="showQuiz()">Take the Quiz</button>
 
         <div id="quiz" class="quiz">
-            <h2 lang="en">Personal Assessment Quiz</h2>
-            <h2 lang="zh">个人评估测评</h2>
+            <h2 lang="en">Quiz</h2>
+            <h2 lang="zh">测评</h2>
             <form id="assessmentForm">
-                <label lang="en">Gender: 
-                    <select name="gender" required>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                    </select>
-                </label>
-                <label lang="zh">性别: 
-                    <select name="gender" required>
-                        <option value="male">男</option>
-                        <option value="female">女</option>
-                        <option value="other">其他</option>
-                    </select>
-                </label><br>
-                <label lang="en">Age: <input type="number" name="age" min="18" max="100" required></label>
-                <label lang="zh">年龄: <input type="number" name="age" min="18" max="100" required></label><br>
-                <label lang="en">Height (cm): <input type="number" name="height" required></label>
-                <label lang="zh">身高 (厘米): <input type="number" name="height" required></label><br>
-                <label lang="en">Weight (kg): <input type="number" name="weight" required></label>
-                <label lang="zh">体重 (公斤): <input type="number" name="weight" required></label><br>
-                <label lang="en">Activity Level: 
-                    <select name="activityLevel" required>
-                        <option value="everyday">Every day</option>
-                        <option value="1-2week">1-2 times a week</option>
-                        <option value="couplemonth">A couple times a month</option>
-                    </select>
-                </label>
-                <label lang="zh">活动水平: 
-                    <select name="activityLevel" required>
-                        <option value="everyday">每天</option>
-                        <option value="1-2week">每周1-2次</option>
-                        <option value="couplemonth">每月几次</option>
-                    </select>
-                </label><br>
-                <label lang="en">Body Type: 
-                    <select name="bodyType" required>
-                        <option value="overweight">Overweight</option>
-                        <option value="chubbysoft">Chubby/Soft</option>
-                        <option value="slim">Slim</option>
-                        <option value="skinny">Skinny</option>
-                    </select>
-                </label>
-                <label lang="zh">体型: 
-                    <select name="bodyType" required>
-                        <option value="overweight">超重</option>
-                        <option value="chubbysoft">圆润/柔软</option>
-                        <option value="slim">苗条</option>
-                        <option value="skinny">瘦弱</option>
-                    </select>
-                </label><br>
-                <label lang="en">Fitness Goal: 
-                    <select name="goal" required>
-                        <option value="idealweight">Ideal Weight</option>
-                        <option value="toneup">Tone Up</option>
-                        <option value="getlean">Get Lean</option>
-                    </select>
-                </label>
-                <label lang="zh">健身目标: 
-                    <select name="goal" required>
-                        <option value="idealweight">理想体重</option>
-                        <option value="toneup">紧实身材</option>
-                        <option value="getlean">减脂</option>
-                    </select>
-                </label><br>
-                <label lang="en">Meal Preferences (e.g., beef, lamb): <input type="number" name="mealPrefs" placeholder="e.g., beef, lamb" required></label>
-                <label lang="zh">饮食偏好 (如牛肉, 羊肉): <input type="number" name="mealPrefs" placeholder="如牛肉, 羊肉" required></label><br>
-                <button type="submit" lang="en">Submit</button>
-                <button type="submit" lang="zh">提交</button>
+                <label lang="en">Name: <input type="text" name="name" required></label>
+                <label lang="zh">姓名: <input type="text" name="name" required></label><br>
+                <button type="submit">Submit</button>
             </form>
             <p class="error" id="jsError" style="display:none;">JavaScript error. Check console.</p>
         </div>
 
         <div id="results" class="results">
-            <h2 lang="en">Your Personalized KetoFit Plan</h2>
-            <h2 lang="zh">您的个性化 KetoFit 计划</h2>
+            <h2 lang="en">Results</h2>
+            <h2 lang="zh">结果</h2>
             <p id="planDetails" lang="en"></p>
             <p id="planDetails" lang="zh"></p>
-            <a id="downloadLink" href="#" download="KetoFit_Plan.pdf" lang="en">Download Plan</a>
-            <a id="downloadLink" href="#" download="KetoFit_Plan.pdf" lang="zh">下载计划</a>
-        </div>
-
-        <div id="about">
-            <h2 lang="en">About Us</h2>
-            <h2 lang="zh">关于我们</h2>
-            <p lang="en">KetoFit is built on ancestral principles, combining a carnivore-keto diet with meat at its core, low-inflammation plants, and moderate low-sugar fruits, inspired by 2025 peer-reviewed science from the Journal of Nutrition. We prioritize precision-based nutrition with AI-optimized macronutrient ratios, emphasizing sleep (7-9 hours) for recovery, and supplementation like creatine and amino acids. Our exercise plans focus on lower body strength for longevity, using bodyweight routines with gym options, all tailored to your health journey.</p>
-            <p lang="zh">KetoFit 基于祖先原则，结合以肉类为核心的肉食-生酮饮食，低炎症植物和适量低糖水果，受到2025年《营养学杂志》等同行评审科学的启发。我们注重精准营养，通过人工智能优化宏量营养比例，强调睡眠（7-9小时）以促进恢复，并辅以肌酸和氨基酸补充。我们的锻炼计划专注于下肢力量以延长寿命，使用自重训练并提供健身房选项，全部针对您的健康旅程量身定制。</p>
-        </div>
-
-        <div class="links">
-            <a href="privacy.html" lang="en">Privacy Policy</a>
-            <a href="privacy.html" lang="zh">隐私政策</a>
-            <a href="terms.html" lang="en">Terms of Use</a>
-            <a href="terms.html" lang="zh">使用条款</a>
         </div>
     </div>
 
     <script>
         console.log('Script loaded at:', new Date().toLocaleTimeString());
-        let currentLang = 'en';
 
-        const thesisData = {
-            nutrition: {
-                baseProteinRatio: { overweight: 1.2, chubbysoft: 1.1, slim: 1.0, skinny: 1.3 },
-                highExerciseProteinBonus: 0.3,
-                carbLimit: 30,
-                fatRatio: 0.7,
-                foods: { meats: ['beef', 'lamb', 'chicken', 'bison', 'goat', 'fish'], plants: ['spinach', 'kale', 'zucchini', 'broccoli'], fruits: ['blueberries', 'raspberries', 'blackberries'] },
-                supplements: ['creatine (5g/day)', 'L-glutamine (5g/day)', 'sleep (7-9h/night)']
-            },
-            exercise: {
-                intensity: { everyday: 'High (5-6 days/week)', '1-2week': 'Moderate (2-3 days/week)', couplemonth: 'Low (1-2 days/week)' },
-                routines: { idealweight: ['Squats', 'Lunges', 'Walking'], toneup: ['Squats', 'Push-Ups', 'Plank'], getlean: ['Squats', 'Burpees', 'Jumping Jacks'] },
-                gymOptions: ['Leg Press', 'Squat Rack', 'Deadlift']
-            }
-        };
+        let currentLang = 'en';
 
         function switchLanguage(lang) {
             if (!lang || lang === currentLang) return;
             currentLang = lang;
-            console.log('Switching to language:', lang);
+            console.log('Switching to:', lang);
             try {
-                const elements = document.querySelectorAll('[lang]');
-                if (!elements.length) throw new Error('No language elements detected');
-                elements.forEach(el => {
+                document.querySelectorAll('[lang]').forEach(el => {
                     el.classList.remove('active');
                     if (el.getAttribute('lang') === lang) el.classList.add('active');
                 });
-                console.log('Language switched, active elements:', document.querySelectorAll('[lang].active').length);
+                console.log('Switched, active elements:', document.querySelectorAll('[lang].active').length);
             } catch (error) {
-                console.error('Language switch failed:', error);
-                const errorDiv = document.getElementById('jsError');
-                if (errorDiv) {
-                    errorDiv.textContent = 'Language error: ' + error.message;
-                    errorDiv.style.display = 'block';
-                }
+                console.error('Switch error:', error);
+                document.getElementById('jsError').textContent = 'Switch failed: ' + error.message;
+                document.getElementById('jsError').style.display = 'block';
             }
         }
 
@@ -178,64 +74,31 @@
             const quiz = document.getElementById('quiz');
             if (quiz) {
                 quiz.classList.add('active');
-                console.log('Quiz activated');
+                console.log('Quiz shown');
             } else {
-                console.error('Quiz element not found');
-                const errorDiv = document.getElementById('jsError');
-                if (errorDiv) {
-                    errorDiv.textContent = 'Quiz not found';
-                    errorDiv.style.display = 'block';
-                }
+                console.error('Quiz not found');
+                document.getElementById('jsError').textContent = 'Quiz not found';
+                document.getElementById('jsError').style.display = 'block';
             }
-        }
-
-        function generateMealPlan(preferences, goal) {
-            const bodyType = document.querySelector('select[name="bodyType"]')?.value || 'slim';
-            const weight = parseFloat(document.querySelector('input[name="weight"]')?.value) || 70;
-            const activityLevel = document.querySelector('select[name="activityLevel"]')?.value || '1-2week';
-            const baseProtein = thesisData.nutrition.baseProteinRatio[bodyType] * weight;
-            const extraProtein = (activityLevel === 'everyday' ? thesisData.nutrition.highExerciseProteinBonus * weight : 0);
-            const proteinTarget = baseProtein + extraProtein;
-            return `Protein: ${proteinTarget.toFixed(1)}g, Carbs: 30g, Fat: ${(thesisData.nutrition.fatRatio * weight).toFixed(1)}g. Use: ${preferences.join(', ')}.`;
-        }
-
-        function generateExercisePlan(activityLevel, goal) {
-            const intensity = thesisData.exercise.intensity[activityLevel] || 'Moderate (2-3 days/week)';
-            const routine = thesisData.exercise.routines[goal] || ['Squats', 'Lunges', 'Walking'];
-            return `Intensity: ${intensity}. Routine: ${routine.join(', ')}.`;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM ready at:', new Date().toLocaleTimeString());
-            const langButtons = document.querySelectorAll('[data-lang]');
-            if (langButtons.length) {
-                langButtons.forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        console.log('Clicked language:', button.getAttribute('data-lang'));
-                        switchLanguage(button.getAttribute('data-lang'));
-                    });
+            console.log('DOM loaded at:', new Date().toLocaleTimeString());
+            document.querySelectorAll('[data-lang]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('Language button clicked:', button.getAttribute('data-lang'));
+                    switchLanguage(button.getAttribute('data-lang'));
                 });
-            } else {
-                console.error('No language buttons found');
-                document.getElementById('jsError').textContent = 'Language buttons missing';
-                document.getElementById('jsError').style.display = 'block';
-            }
+            });
 
-            const quizButtons = document.querySelectorAll('[data-action="quiz"]');
-            if (quizButtons.length) {
-                quizButtons.forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        console.log('Clicked quiz button');
-                        showQuiz();
-                    });
+            document.querySelectorAll('[data-action="quiz"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('Quiz button clicked');
+                    showQuiz();
                 });
-            } else {
-                console.error('No quiz buttons found');
-                document.getElementById('jsError').textContent = 'Quiz buttons missing';
-                document.getElementById('jsError').style.display = 'block';
-            }
+            });
 
             const form = document.getElementById('assessmentForm');
             if (form) {
@@ -245,39 +108,27 @@
                     const formData = new FormData(form);
                     const data = Object.fromEntries(formData);
                     console.log('Form data:', data);
-
-                    const required = ['gender', 'age', 'height', 'weight', 'activityLevel', 'bodyType', 'goal', 'mealPrefs'];
-                    const missing = required.filter(field => !data[field] || data[field].trim() === '');
-                    if (missing.length) {
-                        console.error('Missing fields:', missing);
-                        document.getElementById('jsError').textContent = `Missing: ${missing.join(', ')}`;
-                        document.getElementById('jsError').style.display = 'block';
-                        return;
-                    }
-
-                    const mealPlan = generateMealPlan(data.mealPrefs.split(',').map(p => p.trim()), data.goal);
-                    const exercisePlan = generateExercisePlan(data.activityLevel, data.goal);
                     const planDetailsEn = document.querySelector('#planDetails[lang="en"]');
                     const planDetailsZh = document.querySelector('#planDetails[lang="zh"]');
                     if (planDetailsEn && planDetailsZh) {
-                        planDetailsEn.textContent = `Meal Plan: ${mealPlan}\nExercise Plan: ${exercisePlan}`;
-                        planDetailsZh.textContent = `饮食计划: ${mealPlan}\n锻炼计划: ${exercisePlan}`;
+                        planDetailsEn.textContent = `Hello, ${data.name}!`;
+                        planDetailsZh.textContent = `你好，${data.name}!`;
                         document.getElementById('results').classList.add('active');
-                        console.log('Results shown at:', new Date().toLocaleTimeString());
+                        console.log('Results displayed at:', new Date().toLocaleTimeString());
                     } else {
-                        console.error('Plan details not found');
-                        document.getElementById('jsError').textContent = 'Results section not loaded';
+                        console.error('Results section not found');
+                        document.getElementById('jsError').textContent = 'Results not loaded';
                         document.getElementById('jsError').style.display = 'block';
                     }
                 });
             } else {
                 console.error('Form not found');
-                document.getElementById('jsError').textContent = 'Form not loaded';
+                document.getElementById('jsError').textContent = 'Form not found';
                 document.getElementById('jsError').style.display = 'block';
             }
 
             document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('active'));
-            console.log('English set as active, count:', document.querySelectorAll('[lang].active').length);
+            console.log('English active, count:', document.querySelectorAll('[lang].active').length);
         });
     </script>
 </body>
