@@ -3,26 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Page</title>
+    <title>The KetoFit Program</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #fff; color: #000; }
+        .container { max-width: 800px; margin: auto; }
+        .language-switch { margin-bottom: 20px; }
+        [lang]:not(.active) { display: none !important; }
+        button { padding: 10px; margin: 5px; cursor: pointer; background: #f0f0f0; border: 1px solid #ccc; }
+    </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-22 09:50 EDT -->
-    <h1>Test Page</h1>
-    <button onclick="testJavaScript()">Click Me</button>
-    <p id="result"></p>
+    <div class="container">
+        <div class="language-switch">
+            <button data-lang="en" onclick="switchLanguage('en')">English</button>
+            <button data-lang="zh" onclick="switchLanguage('zh')">简体中文</button>
+        </div>
 
-    <script>
-        console.log('Script loaded at:', new Date().toLocaleTimeString());
+        <h1 lang="en">Welcome to The KetoFit Program</h1>
+        <h1 lang="zh">欢迎体验 KetoFit 计划</h1>
+        <p lang="en">Embrace an ancestral carnivore-keto lifestyle with personalized plans.</p>
+        <p lang="zh">拥抱祖先肉食-生酮生活方式，享受个性化计划。</p>
 
-        function testJavaScript() {
-            console.log('Button clicked at:', new Date().toLocaleTimeString());
-            document.getElementById('result').textContent = 'JavaScript is working!';
-            alert('JavaScript is running!');
-        }
+        <script>
+            let currentLang = 'en';
 
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM loaded at:', new Date().toLocaleTimeString());
-        });
-    </script>
+            function switchLanguage(lang) {
+                if (lang === currentLang) return;
+                currentLang = lang;
+                document.querySelectorAll('[lang]').forEach(el => {
+                    el.classList.remove('active');
+                    if (el.getAttribute('lang') === lang) el.classList.add('active');
+                });
+            }
+
+            // Initialize with English
+            document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('active'));
+        </script>
+    </div>
 </body>
 </html>
