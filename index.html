@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-22 08:05 EDT -->
+    <!-- Force Rebuild: 2025-06-22 08:23 EDT -->
     <div class="container">
         <div class="language-switch">
             <button data-lang="en" onclick="switchLanguage('en')">English</button>
@@ -157,24 +157,20 @@
         function switchLanguage(lang) {
             if (!lang || lang === currentLang) return;
             currentLang = lang;
-            console.log('Switching to language:', lang);
+            console.log('Switching language to:', lang);
             try {
-                const elements = document.querySelectorAll('[lang]');
-                if (!elements.length) throw new Error('No language elements found');
-                elements.forEach(el => {
+                document.querySelectorAll('[lang]').forEach(el => {
                     el.classList.remove('active');
                     if (el.getAttribute('lang') === lang) el.classList.add('active');
                 });
-                const activeCount = document.querySelectorAll('[lang].active').length;
-                console.log('Active elements count:', activeCount);
-                if (activeCount === 0) {
-                    document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active'));
-                    console.log('Applied fallback for:', lang);
-                }
+                console.log('Active language elements:', document.querySelectorAll('[lang].active').length);
             } catch (error) {
                 console.error('Language switch error:', error);
-                document.getElementById('jsError').textContent = 'Language switch failed. See console.';
-                document.getElementById('jsError').style.display = 'block';
+                const errorMsg = document.getElementById('jsError');
+                if (errorMsg) {
+                    errorMsg.textContent = 'Language switch failed. Check console for details.';
+                    errorMsg.style.display = 'block';
+                }
             }
         }
 
@@ -185,46 +181,52 @@
                 console.log('Quiz displayed');
             } else {
                 console.error('Quiz element not found');
-                document.getElementById('jsError').textContent = 'Quiz not loaded.';
-                document.getElementById('jsError').style.display = 'block';
+                const errorMsg = document.getElementById('jsError');
+                if (errorMsg) {
+                    errorMsg.textContent = 'Quiz section not loaded.';
+                    errorMsg.style.display = 'block';
+                }
             }
         }
 
         function generateMealPlan(preferences, goal) {
-            const bodyType = document.querySelector('select[name="bodyType"]').value;
-            const weight = parseFloat(document.querySelector('input[name="weight"]').value);
-            const activityLevel = document.querySelector('select[name="activityLevel"]').value;
+            const bodyType = document.querySelector('select[name="bodyType"]')?.value || 'slim';
+            const weight = parseFloat(document.querySelector('input[name="weight"]')?.value) || 70;
+            const activityLevel = document.querySelector('select[name="activityLevel"]')?.value || '1-2week';
             const baseProtein = thesisData.nutrition.baseProteinRatio[bodyType] * weight;
             const extraProtein = (activityLevel === 'everyday' ? thesisData.nutrition.highExerciseProteinBonus * weight : 0);
             const proteinTarget = baseProtein + extraProtein;
             const carbLimit = thesisData.nutrition.carbLimit;
             const fatTarget = thesisData.nutrition.fatRatio * weight;
-            return `Target: ${proteinTarget.toFixed(1)}g protein, ${carbLimit}g carbs, ${fatTarget.toFixed(1)}g fat. Include: ${preferences.join(', ')}, ${thesisData.nutrition.plants.join(', ')}, ${thesisData.nutrition.fruits.join(', ')} in moderation. Supplements: ${thesisData.nutrition.supplements.join(', ')}. Track: Weight, energy, sleep.`;
+            return `Target: ${proteinTarget.toFixed(1)}g protein, ${carbLimit}g carbs, ${fatTarget.toFixed(1)}g fat. Include: ${preferences.join(', ')}, ${thesisData.nutrition.plants.join(', ')}, ${thesisData.nutrition.fruits.join(', ')} sparingly. Supplements: ${thesisData.nutrition.supplements.join(', ')}.`;
         }
 
         function generateExercisePlan(activityLevel, goal) {
-            const intensity = thesisData.exercise.intensity[activityLevel];
-            const routine = thesisData.exercise.routines[goal];
+            const intensity = thesisData.exercise.intensity[activityLevel] || 'Moderate (2-3 days/week)';
+            const routine = thesisData.exercise.routines[goal] || ['Squats', 'Lunges', 'Walking'];
             const gymOption = thesisData.exercise.gymOptions[Math.floor(Math.random() * thesisData.exercise.gymOptions.length)];
-            return `Intensity: ${intensity}. Routine: ${routine.join(', ')}. Gym Option: ${gymOption}. Track: Strength, endurance, sleep.`;
+            return `Intensity: ${intensity}. Routine: ${routine.join(', ')}. Gym Option: ${gymOption}.`;
         }
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM loaded at:', new Date().toLocaleTimeString());
-            if (!document.querySelectorAll('[lang]').length) console.error('No language elements detected');
-            document.querySelectorAll('[data-lang]').forEach(button => {
+            console.log('Page loaded at:', new Date().toLocaleTimeString());
+            const langButtons = document.querySelectorAll('[data-lang]');
+            if (langButtons.length === 0) console.error('No language buttons found');
+            langButtons.forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
-                    console.log('Clicked language:', button.getAttribute('data-lang'));
+                    console.log('Language button clicked:', button.getAttribute('data-lang'));
                     switchLanguage(button.getAttribute('data-lang'));
                 });
             });
 
-            document.querySelectorAll('[data-action="quiz"]').forEach(button => {
+            const quizButtons = document.querySelectorAll('[data-action="quiz"]');
+            if (quizButtons.length === 0) console.error('No quiz buttons found');
+            quizButtons.forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
-                    console.log('Clicked quiz button');
+                    console.log('Quiz button clicked');
                     showQuiz();
                 });
             });
@@ -263,26 +265,20 @@
                     const planDetailsZh = document.querySelector('#planDetails[lang="zh"]');
                     const downloadLink = document.getElementById('downloadLink');
                     if (planDetailsEn && planDetailsZh && downloadLink) {
-                        planDetailsEn.innerHTML = `
-                            <h3>Meal Plan</h3><p>${mealPlan}</p>
-                            <h3>Exercise Plan</h3><p>${exercisePlan}</p>
-                            <p>Pay <a href="mailto:support@ketofit.com?subject=Purchase Plan">here</a> for full plans.</p>
-                        `;
-                        planDetailsZh.innerHTML = `
-                            <h3>饮食计划</h3><p>${mealPlan}</p>
-                            <h3>锻炼计划</h3><p>${exercisePlan}</p>
-                            <p>支付 <a href="mailto:support@ketofit.com?subject=Purchase Plan">这里</a> 获取完整计划。</p>
-                        `;
+                        planDetailsEn.textContent = `Meal Plan: ${mealPlan}\nExercise Plan: ${exercisePlan}\nPay here for full plans: <a href="mailto:support@ketofit.com?subject=Purchase Plan">email</a>`;
+                        planDetailsZh.textContent = `饮食计划: ${mealPlan}\n锻炼计划: ${exercisePlan}\n支付获取完整计划: <a href="mailto:support@ketofit.com?subject=Purchase Plan">电子邮件</a>`;
                         document.getElementById('results').classList.add('active');
-                        downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`KetoFit Plan\n\n${currentLang === 'en' ? planDetailsEn.innerHTML : planDetailsZh.innerHTML}`);
+                        downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`KetoFit Plan\n\n${currentLang === 'en' ? planDetailsEn.textContent : planDetailsZh.textContent}`);
                         console.log('Results displayed at:', new Date().toLocaleTimeString());
                     } else {
                         console.error('Result elements not found:', { planDetailsEn, planDetailsZh, downloadLink });
+                        document.getElementById('jsError').textContent = 'Failed to display results. Check console.';
                         document.getElementById('jsError').style.display = 'block';
                     }
                 });
             } else {
                 console.error('Assessment form not found');
+                document.getElementById('jsError').textContent = 'Form not loaded.';
                 document.getElementById('jsError').style.display = 'block';
             }
 
