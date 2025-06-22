@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The KetoFit Program</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #fff; color: #000; }
         .container { max-width: 800px; margin: auto; }
         .language-switch { margin-bottom: 20px; }
         .quiz, .results { display: none; }
         .quiz.active, .results.active { display: block; }
         [lang]:not(.active) { display: none !important; }
-        button { padding: 10px; margin: 5px; cursor: pointer; }
+        button { padding: 10px; margin: 5px; cursor: pointer; background: #f0f0f0; border: 1px solid #ccc; }
         .error { color: red; }
         .links { margin-top: 20px; }
         a { margin-right: 10px; }
     </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-22 07:52 EDT -->
+    <!-- Force Rebuild: 2025-06-22 08:05 EDT -->
     <div class="container">
         <div class="language-switch">
             <button data-lang="en" onclick="switchLanguage('en')">English</button>
@@ -27,8 +27,8 @@
 
         <h1 lang="en">Welcome to The KetoFit Program</h1>
         <h1 lang="zh">欢迎体验 KetoFit 计划</h1>
-        <p lang="en">Embrace an ancestral carnivore-keto lifestyle with personalized meal and exercise plans.</p>
-        <p lang="zh">拥抱祖先肉食-生酮生活方式，享受个性化饮食和锻炼计划。</p>
+        <p lang="en">Embrace an ancestral carnivore-keto lifestyle with personalized plans.</p>
+        <p lang="zh">拥抱祖先肉食-生酮生活方式，享受个性化计划。</p>
         <button data-action="quiz" lang="en" onclick="showQuiz()">Take the Quiz</button>
         <button data-action="quiz" lang="zh" onclick="showQuiz()">开始测评</button>
 
@@ -120,8 +120,8 @@
         <div id="about">
             <h2 lang="en">About Us</h2>
             <h2 lang="zh">关于我们</h2>
-            <p lang="en">KetoFit blends ancestral carnivore and keto principles, prioritizing meat, low-inflammation plants, and moderate low-sugar fruits, supported by science from the Journal of Nutrition and American Journal of Clinical Nutrition (2025). We optimize plans with AI for health and longevity, emphasizing sleep, creatine, and amino acids.</p>
-            <p lang="zh">KetoFit 融合祖先肉食和生酮原则，优先考虑肉类、低炎症植物和适量低糖水果，得到《营养学杂志》和《美国临床营养学杂志》(2025) 的科学支持。我们利用人工智能优化计划，强调睡眠、肌酸和氨基酸。</p>
+            <p lang="en">KetoFit is built on ancestral principles, combining a carnivore-keto diet with meat at its core, low-inflammation plants, and moderate low-sugar fruits, inspired by 2025 peer-reviewed science from the Journal of Nutrition. We prioritize precision-based nutrition with AI-optimized macronutrient ratios, emphasizing sleep (7-9 hours) for recovery, and supplementation like creatine and amino acids. Our exercise plans focus on lower body strength for longevity, using bodyweight routines with gym options, all tailored to your health journey.</p>
+            <p lang="zh">KetoFit 基于祖先原则，结合以肉类为核心的肉食-生酮饮食，低炎症植物和适量低糖水果，受到2025年《营养学杂志》等同行评审科学的启发。我们注重精准营养，通过人工智能优化宏量营养比例，强调睡眠（7-9小时）以促进恢复，并辅以肌酸和氨基酸补充。我们的锻炼计划专注于下肢力量以延长寿命，使用自重训练并提供健身房选项，全部针对您的健康旅程量身定制。</p>
         </div>
 
         <div class="links">
@@ -136,62 +136,19 @@
         // Global variables
         let currentLang = 'en';
 
-        // Thesis data based on ancestral carnivore-keto and exercise principles
+        // Thesis data
         const thesisData = {
             nutrition: {
-                baseProteinRatio: { // g per kg body weight, adjusted by body type
-                    overweight: 1.2,
-                    chubbysoft: 1.1,
-                    slim: 1.0,
-                    skinny: 1.3
-                },
-                highExerciseProteinBonus: 0.3, // Additional g per kg on high activity days
-                carbLimit: 30, // Low-carb threshold (g/day)
-                fatRatio: 0.7, // g per kg body weight for keto fat intake
-                foods: {
-                    meats: ['beef', 'lamb', 'chicken', 'bison', 'goat', 'fish'],
-                    plants: ['spinach', 'kale', 'zucchini', 'broccoli'],
-                    fruits: ['blueberries', 'raspberries', 'blackberries']
-                },
-                meals: {
-                    breakfast: [
-                        'Scrambled eggs with bacon and spinach', 'Lamb sausage with kale', 'Bison patties with zucchini',
-                        'Chicken liver with broccoli', 'Fish omelette with berries', 'Beef mince with spinach',
-                        'Goat cheese scramble', 'Salmon with kale', 'Chicken thigh with zucchini', 'Bison steak with spinach',
-                        'Lamb chop with broccoli', 'Fish with berries', 'Beef sausage with kale', 'Chicken with spinach',
-                        'Goat meat with zucchini', 'Salmon scramble', 'Bison with broccoli', 'Lamb with berries',
-                        'Chicken with kale', 'Fish with spinach'
-                    ],
-                    lunch: [
-                        'Beef stir-fry with broccoli', 'Lamb with spinach', 'Chicken salad with kale',
-                        'Bison bowl with zucchini', 'Fish with asparagus', 'Goat stew with spinach',
-                        'Salmon with broccoli', 'Beef with berries', 'Chicken with kale', 'Bison with zucchini',
-                        'Lamb with spinach', 'Fish with broccoli', 'Goat with asparagus', 'Salmon with kale',
-                        'Beef with spinach', 'Chicken with berries', 'Bison with broccoli', 'Lamb with zucchini',
-                        'Goat with kale', 'Fish with spinach'
-                    ],
-                    dinner: [
-                        'Beef ribs with cauliflower mash', 'Lamb roast with spinach', 'Chicken with broccoli',
-                        'Bison steak with kale', 'Fish with zucchini', 'Goat curry with asparagus',
-                        'Salmon with spinach', 'Beef with berries', 'Chicken with kale', 'Bison with broccoli',
-                        'Lamb with zucchini', 'Fish with spinach', 'Goat with broccoli', 'Salmon with asparagus',
-                        'Beef with kale', 'Chicken with spinach', 'Bison with berries', 'Lamb with broccoli',
-                        'Goat with zucchini', 'Fish with kale'
-                    ]
-                },
+                baseProteinRatio: { overweight: 1.2, chubbysoft: 1.1, slim: 1.0, skinny: 1.3 },
+                highExerciseProteinBonus: 0.3,
+                carbLimit: 30,
+                fatRatio: 0.7,
+                foods: { meats: ['beef', 'lamb', 'chicken', 'bison', 'goat', 'fish'], plants: ['spinach', 'kale', 'zucchini', 'broccoli'], fruits: ['blueberries', 'raspberries', 'blackberries'] },
                 supplements: ['creatine (5g/day)', 'L-glutamine (5g/day)', 'sleep (7-9h/night)']
             },
             exercise: {
-                intensity: {
-                    everyday: 'High (5-6 days/week)',
-                    '1-2week': 'Moderate (2-3 days/week)',
-                    couplemonth: 'Low (1-2 days/week)'
-                },
-                routines: {
-                    idealweight: ['Squats, Lunges, Walking'],
-                    toneup: ['Squats, Push-Ups, Plank'],
-                    getlean: ['Squats, Burpees, Jumping Jacks']
-                },
+                intensity: { everyday: 'High (5-6 days/week)', '1-2week': 'Moderate (2-3 days/week)', couplemonth: 'Low (1-2 days/week)' },
+                routines: { idealweight: ['Squats', 'Lunges', 'Walking'], toneup: ['Squats', 'Push-Ups', 'Plank'], getlean: ['Squats', 'Burpees', 'Jumping Jacks'] },
                 gymOptions: ['Leg Press', 'Squat Rack', 'Deadlift']
             }
         };
@@ -200,21 +157,24 @@
         function switchLanguage(lang) {
             if (!lang || lang === currentLang) return;
             currentLang = lang;
-            console.log('Switching to:', lang);
-            const elements = document.querySelectorAll('[lang]');
-            if (!elements.length) {
-                console.error('No language elements found');
+            console.log('Switching to language:', lang);
+            try {
+                const elements = document.querySelectorAll('[lang]');
+                if (!elements.length) throw new Error('No language elements found');
+                elements.forEach(el => {
+                    el.classList.remove('active');
+                    if (el.getAttribute('lang') === lang) el.classList.add('active');
+                });
+                const activeCount = document.querySelectorAll('[lang].active').length;
+                console.log('Active elements count:', activeCount);
+                if (activeCount === 0) {
+                    document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active'));
+                    console.log('Applied fallback for:', lang);
+                }
+            } catch (error) {
+                console.error('Language switch error:', error);
+                document.getElementById('jsError').textContent = 'Language switch failed. See console.';
                 document.getElementById('jsError').style.display = 'block';
-                return;
-            }
-            elements.forEach(el => {
-                el.classList.remove('active');
-                if (el.getAttribute('lang') === lang) el.classList.add('active');
-            });
-            console.log('Active elements:', document.querySelectorAll('[lang].active').length);
-            if (document.querySelectorAll('[lang].active').length === 0) {
-                document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active'));
-                console.log('Fallback applied for:', lang);
             }
         }
 
@@ -225,6 +185,7 @@
                 console.log('Quiz displayed');
             } else {
                 console.error('Quiz element not found');
+                document.getElementById('jsError').textContent = 'Quiz not loaded.';
                 document.getElementById('jsError').style.display = 'block';
             }
         }
@@ -238,25 +199,24 @@
             const proteinTarget = baseProtein + extraProtein;
             const carbLimit = thesisData.nutrition.carbLimit;
             const fatTarget = thesisData.nutrition.fatRatio * weight;
-            const mealCategory = thesisData.nutrition.meals[goal === 'idealweight' ? 'breakfast' : goal === 'toneup' ? 'lunch' : 'dinner'].slice(0, 5); // Sample subset
-            return `Target: ${proteinTarget.toFixed(1)}g protein, ${carbLimit}g carbs, ${fatTarget.toFixed(1)}g fat. Meals: ${mealCategory.join(', ')} with ${preferences.join(', ')}, ${thesisData.nutrition.fruits.join(', ')} in moderation. Supplements: ${thesisData.nutrition.supplements.join(', ')}. Track: Weekly weight, energy levels.`;
+            return `Target: ${proteinTarget.toFixed(1)}g protein, ${carbLimit}g carbs, ${fatTarget.toFixed(1)}g fat. Include: ${preferences.join(', ')}, ${thesisData.nutrition.plants.join(', ')}, ${thesisData.nutrition.fruits.join(', ')} in moderation. Supplements: ${thesisData.nutrition.supplements.join(', ')}. Track: Weight, energy, sleep.`;
         }
 
         function generateExercisePlan(activityLevel, goal) {
             const intensity = thesisData.exercise.intensity[activityLevel];
             const routine = thesisData.exercise.routines[goal];
             const gymOption = thesisData.exercise.gymOptions[Math.floor(Math.random() * thesisData.exercise.gymOptions.length)];
-            return `Intensity: ${intensity}. Routine: ${routine.join(', ')}. Gym Option: ${gymOption}. Track: Strength gains, endurance, sleep quality.`;
+            return `Intensity: ${intensity}. Routine: ${routine.join(', ')}. Gym Option: ${gymOption}. Track: Strength, endurance, sleep.`;
         }
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM loaded at:', new Date().toLocaleTimeString());
-            if (!document.querySelector('script')) console.error('Script tag not found');
+            if (!document.querySelectorAll('[lang]').length) console.error('No language elements detected');
             document.querySelectorAll('[data-lang]').forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
-                    console.log('Language button clicked:', button.getAttribute('data-lang'));
+                    console.log('Clicked language:', button.getAttribute('data-lang'));
                     switchLanguage(button.getAttribute('data-lang'));
                 });
             });
@@ -264,7 +224,7 @@
             document.querySelectorAll('[data-action="quiz"]').forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
-                    console.log('Quiz button clicked');
+                    console.log('Clicked quiz button');
                     showQuiz();
                 });
             });
@@ -281,7 +241,7 @@
                     const missing = required.filter(field => !data[field] || data[field].trim() === '');
                     if (missing.length > 0) {
                         console.error('Missing fields:', missing);
-                        document.getElementById('jsError').textContent = `请填写所有字段: ${missing.join(', ')}.`;
+                        document.getElementById('jsError').textContent = `Missing fields: ${missing.join(', ')}.`;
                         document.getElementById('jsError').style.display = 'block';
                         return;
                     }
@@ -290,7 +250,7 @@
                     for (let field in numericFields) {
                         if (isNaN(parseFloat(numericFields[field]))) {
                             console.error(`${field} is not a number`);
-                            document.getElementById('jsError').textContent = `${field} 必须是数字.`;
+                            document.getElementById('jsError').textContent = `${field} must be a number.`;
                             document.getElementById('jsError').style.display = 'block';
                             return;
                         }
@@ -306,12 +266,12 @@
                         planDetailsEn.innerHTML = `
                             <h3>Meal Plan</h3><p>${mealPlan}</p>
                             <h3>Exercise Plan</h3><p>${exercisePlan}</p>
-                            <p>Pay <a href="mailto:support@ketofit.com?subject=Purchase Plan">here</a> for 20 breakfast, 20 lunch, 20 dinner options.</p>
+                            <p>Pay <a href="mailto:support@ketofit.com?subject=Purchase Plan">here</a> for full plans.</p>
                         `;
                         planDetailsZh.innerHTML = `
                             <h3>饮食计划</h3><p>${mealPlan}</p>
                             <h3>锻炼计划</h3><p>${exercisePlan}</p>
-                            <p>支付 <a href="mailto:support@ketofit.com?subject=Purchase Plan">这里</a> 获取20个早餐、20个午餐、20个晚餐选项。</p>
+                            <p>支付 <a href="mailto:support@ketofit.com?subject=Purchase Plan">这里</a> 获取完整计划。</p>
                         `;
                         document.getElementById('results').classList.add('active');
                         downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`KetoFit Plan\n\n${currentLang === 'en' ? planDetailsEn.innerHTML : planDetailsZh.innerHTML}`);
