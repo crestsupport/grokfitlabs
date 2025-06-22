@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <!-- Force Rebuild: 2025-06-22 08:45 EDT -->
+    <!-- Force Rebuild: 2025-06-22 09:08 EDT -->
     <div class="container">
         <div class="language-switch">
             <button data-lang="en" onclick="switchLanguage('en')">English</button>
@@ -100,8 +100,8 @@
                         <option value="getlean">减脂</option>
                     </select>
                 </label><br>
-                <label lang="en">Meal Preferences (e.g., beef, lamb): <input type="text" name="mealPrefs" placeholder="e.g., beef, lamb" required></label>
-                <label lang="zh">饮食偏好 (如牛肉, 羊肉): <input type="text" name="mealPrefs" placeholder="如牛肉, 羊肉" required></label><br>
+                <label lang="en">Meal Preferences (e.g., beef, lamb): <input type="number" name="mealPrefs" placeholder="e.g., beef, lamb" required></label>
+                <label lang="zh">饮食偏好 (如牛肉, 羊肉): <input type="number" name="mealPrefs" placeholder="如牛肉, 羊肉" required></label><br>
                 <button type="submit" lang="en">Submit</button>
                 <button type="submit" lang="zh">提交</button>
             </form>
@@ -133,10 +133,9 @@
     </div>
 
     <script>
-        // Global variables
+        console.log('Script loaded at:', new Date().toLocaleTimeString());
         let currentLang = 'en';
 
-        // Thesis data
         const thesisData = {
             nutrition: {
                 baseProteinRatio: { overweight: 1.2, chubbysoft: 1.1, slim: 1.0, skinny: 1.3 },
@@ -153,24 +152,23 @@
             }
         };
 
-        // Functions
         function switchLanguage(lang) {
             if (!lang || lang === currentLang) return;
             currentLang = lang;
-            console.log('Attempting to switch to:', lang);
+            console.log('Switching to language:', lang);
             try {
                 const elements = document.querySelectorAll('[lang]');
-                if (elements.length === 0) throw new Error('No language elements found');
+                if (!elements.length) throw new Error('No language elements detected');
                 elements.forEach(el => {
                     el.classList.remove('active');
                     if (el.getAttribute('lang') === lang) el.classList.add('active');
                 });
-                console.log('Switched to:', lang, 'Active elements:', document.querySelectorAll('[lang].active').length);
+                console.log('Language switched, active elements:', document.querySelectorAll('[lang].active').length);
             } catch (error) {
-                console.error('Switch language error:', error);
+                console.error('Language switch failed:', error);
                 const errorDiv = document.getElementById('jsError');
                 if (errorDiv) {
-                    errorDiv.textContent = 'Language switch failed: ' + error.message;
+                    errorDiv.textContent = 'Language error: ' + error.message;
                     errorDiv.style.display = 'block';
                 }
             }
@@ -180,12 +178,12 @@
             const quiz = document.getElementById('quiz');
             if (quiz) {
                 quiz.classList.add('active');
-                console.log('Quiz displayed');
+                console.log('Quiz activated');
             } else {
                 console.error('Quiz element not found');
                 const errorDiv = document.getElementById('jsError');
                 if (errorDiv) {
-                    errorDiv.textContent = 'Quiz not found on page.';
+                    errorDiv.textContent = 'Quiz not found';
                     errorDiv.style.display = 'block';
                 }
             }
@@ -198,104 +196,88 @@
             const baseProtein = thesisData.nutrition.baseProteinRatio[bodyType] * weight;
             const extraProtein = (activityLevel === 'everyday' ? thesisData.nutrition.highExerciseProteinBonus * weight : 0);
             const proteinTarget = baseProtein + extraProtein;
-            const carbLimit = thesisData.nutrition.carbLimit;
-            const fatTarget = thesisData.nutrition.fatRatio * weight;
-            return `Target: ${proteinTarget.toFixed(1)}g protein, ${carbLimit}g carbs, ${fatTarget.toFixed(1)}g fat. Use: ${preferences.join(', ')}, ${thesisData.nutrition.plants.join(', ')}, ${thesisData.nutrition.fruits.join(', ')} sparingly. Supplements: ${thesisData.nutrition.supplements.join(', ')}.`;
+            return `Protein: ${proteinTarget.toFixed(1)}g, Carbs: 30g, Fat: ${(thesisData.nutrition.fatRatio * weight).toFixed(1)}g. Use: ${preferences.join(', ')}.`;
         }
 
         function generateExercisePlan(activityLevel, goal) {
             const intensity = thesisData.exercise.intensity[activityLevel] || 'Moderate (2-3 days/week)';
             const routine = thesisData.exercise.routines[goal] || ['Squats', 'Lunges', 'Walking'];
-            const gymOption = thesisData.exercise.gymOptions[Math.floor(Math.random() * thesisData.exercise.gymOptions.length)];
-            return `Intensity: ${intensity}. Routine: ${routine.join(', ')}. Gym Option: ${gymOption}.`;
+            return `Intensity: ${intensity}. Routine: ${routine.join(', ')}.`;
         }
 
-        // Event listeners
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM loaded at:', new Date().toLocaleTimeString());
+            console.log('DOM ready at:', new Date().toLocaleTimeString());
             const langButtons = document.querySelectorAll('[data-lang]');
-            if (langButtons.length > 0) {
+            if (langButtons.length) {
                 langButtons.forEach(button => {
                     button.addEventListener('click', (e) => {
                         e.preventDefault();
-                        console.log('Language button pressed:', button.getAttribute('data-lang'));
+                        console.log('Clicked language:', button.getAttribute('data-lang'));
                         switchLanguage(button.getAttribute('data-lang'));
                     });
                 });
             } else {
-                console.error('No language buttons detected');
-                document.getElementById('jsError').textContent = 'Language buttons not found.';
+                console.error('No language buttons found');
+                document.getElementById('jsError').textContent = 'Language buttons missing';
                 document.getElementById('jsError').style.display = 'block';
             }
 
             const quizButtons = document.querySelectorAll('[data-action="quiz"]');
-            if (quizButtons.length > 0) {
+            if (quizButtons.length) {
                 quizButtons.forEach(button => {
                     button.addEventListener('click', (e) => {
                         e.preventDefault();
-                        console.log('Quiz button pressed');
+                        console.log('Clicked quiz button');
                         showQuiz();
                     });
                 });
             } else {
-                console.error('No quiz buttons detected');
-                document.getElementById('jsError').textContent = 'Quiz buttons not found.';
+                console.error('No quiz buttons found');
+                document.getElementById('jsError').textContent = 'Quiz buttons missing';
                 document.getElementById('jsError').style.display = 'block';
             }
 
-            const assessmentForm = document.getElementById('assessmentForm');
-            if (assessmentForm) {
-                assessmentForm.addEventListener('submit', (e) => {
+            const form = document.getElementById('assessmentForm');
+            if (form) {
+                form.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    console.log('Form submitted at:', new Date().toLocaleTimeString(), 'Form data:', Object.fromEntries(new FormData(assessmentForm)));
-                    const formData = new FormData(assessmentForm);
+                    console.log('Form submitted at:', new Date().toLocaleTimeString());
+                    const formData = new FormData(form);
                     const data = Object.fromEntries(formData);
+                    console.log('Form data:', data);
 
                     const required = ['gender', 'age', 'height', 'weight', 'activityLevel', 'bodyType', 'goal', 'mealPrefs'];
                     const missing = required.filter(field => !data[field] || data[field].trim() === '');
-                    if (missing.length > 0) {
+                    if (missing.length) {
                         console.error('Missing fields:', missing);
-                        document.getElementById('jsError').textContent = `Please fill: ${missing.join(', ')}.`;
+                        document.getElementById('jsError').textContent = `Missing: ${missing.join(', ')}`;
                         document.getElementById('jsError').style.display = 'block';
                         return;
                     }
 
-                    const numericFields = { weight: data.weight, height: data.height, age: data.age };
-                    for (let field in numericFields) {
-                        if (isNaN(parseFloat(numericFields[field]))) {
-                            console.error(`${field} is not a number`);
-                            document.getElementById('jsError').textContent = `${field} must be a number.`;
-                            document.getElementById('jsError').style.display = 'block';
-                            return;
-                        }
-                    }
-
                     const mealPlan = generateMealPlan(data.mealPrefs.split(',').map(p => p.trim()), data.goal);
                     const exercisePlan = generateExercisePlan(data.activityLevel, data.goal);
-
                     const planDetailsEn = document.querySelector('#planDetails[lang="en"]');
                     const planDetailsZh = document.querySelector('#planDetails[lang="zh"]');
-                    const downloadLink = document.getElementById('downloadLink');
-                    if (planDetailsEn && planDetailsZh && downloadLink) {
-                        planDetailsEn.textContent = `Meal Plan: ${mealPlan}\nExercise Plan: ${exercisePlan}\nPay for full plans: <a href="mailto:support@ketofit.com?subject=Purchase Plan">email</a>`;
-                        planDetailsZh.textContent = `饮食计划: ${mealPlan}\n锻炼计划: ${exercisePlan}\n支付获取完整计划: <a href="mailto:support@ketofit.com?subject=Purchase Plan">电子邮件</a>`;
+                    if (planDetailsEn && planDetailsZh) {
+                        planDetailsEn.textContent = `Meal Plan: ${mealPlan}\nExercise Plan: ${exercisePlan}`;
+                        planDetailsZh.textContent = `饮食计划: ${mealPlan}\n锻炼计划: ${exercisePlan}`;
                         document.getElementById('results').classList.add('active');
-                        downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`KetoFit Plan\n\n${currentLang === 'en' ? planDetailsEn.textContent : planDetailsZh.textContent}`);
-                        console.log('Results displayed at:', new Date().toLocaleTimeString());
+                        console.log('Results shown at:', new Date().toLocaleTimeString());
                     } else {
-                        console.error('Result elements missing:', { planDetailsEn, planDetailsZh, downloadLink });
-                        document.getElementById('jsError').textContent = 'Results failed to load. Check console.';
+                        console.error('Plan details not found');
+                        document.getElementById('jsError').textContent = 'Results section not loaded';
                         document.getElementById('jsError').style.display = 'block';
                     }
                 });
             } else {
-                console.error('Assessment form not found');
-                document.getElementById('jsError').textContent = 'Form not found on page.';
+                console.error('Form not found');
+                document.getElementById('jsError').textContent = 'Form not loaded';
                 document.getElementById('jsError').style.display = 'block';
             }
 
             document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('active'));
-            console.log('Initialized with English, active count:', document.querySelectorAll('[lang].active').length);
+            console.log('English set as active, count:', document.querySelectorAll('[lang].active').length);
         });
     </script>
 </body>
