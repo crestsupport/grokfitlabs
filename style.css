@@ -19,7 +19,7 @@ body {
 }
 
 .logo {
-  height: 120px;
+  height: 60px; /* Reduced from 120px to 60px */
   margin-bottom: 10px;
 }
 
@@ -38,7 +38,7 @@ body {
 }
 
 header {
-  background-color: #4CAF50;
+  background-color: #4CAF50; /* Ensures green header */
   color: white;
   padding: 15px;
   border-radius: 8px 8px 0 0;
