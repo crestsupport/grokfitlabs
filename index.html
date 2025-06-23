@@ -1,259 +1,103 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
-import Logo from './logo.svg'; // Placeholder for your preferred logo
-
-const translations = {
-  en: {
-    title: "GrokFit Labs: Ancestral Primal Living",
-    subtitle: "Embrace time-tested principles for nutrition, fitness, and wellness adapted to modern life.",
-    language: "Language",
-    quizTitle: "Personalized Nutrition & Fitness Quiz",
-    gender: "Gender",
-    male: "Male",
-    female: "Female",
-    age: "Age",
-    height: "Height (cm)",
-    weight: "Weight (kg)",
-    activityLevel: "Desired Activity Level",
-    activityOptions: [
-      "Twice per week",
-      "3 times per week",
-      "4-6 times per week",
-      "Every day"
-    ],
-    bodyType: "Body Type",
-    bodyTypeOptions: ["Overweight", "Chubby/Soft", "Slim", "Skinny"],
-    fitnessGoal: "Fitness Goal",
-    fitnessGoalOptions: ["Tone up", "Reach ideal weight", "Get lean", "Build muscle"],
-    mealPreference: "Meal Preference",
-    mealPreferenceOptions: ["Beef", "Pork", "Lamb", "Fish", "Seafood", "Poultry"],
-    exerciseType: "Exercise Type",
-    exerciseTypeOptions: ["Bodyweight", "Gym-based"],
-    submit: "Submit Quiz",
-    results: "Your Personalized Plan",
-    pay: "Pay to Access Plan ($29.99)",
-    nutritionPlan: "Nutrition Plan",
-    exercisePlan: "Exercise Plan",
-    lifestyleTips: "Lifestyle Tips",
-    sunExposure: "Get 15-30 minutes of sun exposure daily for vitamin D.",
-    sleep: "Aim for 7-9 hours of quality sleep in a dark, cool room.",
-    avoidJunk: "Avoid processed foods and artificial lighting after sunset.",
-    beginnerNote: "Beginner: Use easier variations (e.g., knee push-ups, assisted squats).",
-    advancedNote: "Advanced: Increase reps or add pauses (e.g., hold squat at bottom).",
-    footer: "© 2025 GrokFit Labs. All rights reserved."
-  },
-  ja: {
-    title: "GrokFit Labs：祖先の原始的な生活",
-    subtitle: "現代社会に適応した、時間に裏打ちされた栄養、フィットネス、ウェルネスの原則を取り入れましょう。",
-    language: "言語",
-    quizTitle: "パーソナライズされた栄養＆フィットネスクイズ",
-    gender: "性別",
-    male: "男性",
-    female: "女性",
-    age: "年齢",
-    height: "身長（cm）",
-    weight: "体重（kg）",
-    activityLevel: "希望する活動レベル",
-    activityOptions: [
-      "週に2回",
-      "週に3回",
-      "週に4～6回",
-      "毎日"
-    ],
-    bodyType: "体型",
-    bodyTypeOptions: ["過体重", "ぽっちゃり/柔らかい", "スリム", "痩せ型"],
-    fitnessGoal: "フィットネス目標",
-    fitnessGoalOptions: ["引き締める", "理想の体重に達する", "スリムになる", "筋肉をつける"],
-    mealPreference: "食事の好み",
-    mealPreferenceOptions: ["牛肉", "豚肉", "羊肉", "魚", "シーフード", "鶏肉"],
-    exerciseType: "運動の種類",
-    exerciseTypeOptions: ["自重", "ジムベース"],
-    submit: "クイズを提出",
-    results: "あなたのパーソナライズされたプラン",
-    pay: "プランにアクセスするために支払う（¥3,500）",
-    nutritionPlan: "栄養プラン",
-    exercisePlan: "運動プラン",
-    lifestyleTips: "生活習慣のヒント",
-    sunExposure: "ビタミンDのために、毎日15～30分の日光浴を。",
-    sleep: "暗く涼しい部屋で7～9時間の質の良い睡眠を目指す。",
-    avoidJunk: "加工食品や日没後の人工照明を避ける。",
-    beginnerNote: "初心者: 簡単なバリエーションを使用（例: 膝プッシュアップ、補助スクワット）。",
-    advancedNote: "上級者: 回数を増やすか、ポーズを追加（例: スクワットの底で保持）。",
-    footer: "© 2025 GrokFit Labs. 無断転載を禁じます。"
-  }
-};
-
-const App = () => {
-  const [language, setLanguage] = useState('en');
-  const [showQuiz, setShowQuiz] = useState(true);
-  const [showResults, setShowResults] = useState(false);
-  const [formData, setFormData] = useState({
-    gender: '',
-    age: '',
-    height: '',
-    weight: '',
-    activityLevel: '',
-    bodyType: '',
-    fitnessGoal: '',
-    mealPreference: '',
-    exerciseType: ''
-  });
-  const [results, setResults] = useState(null);
-  const t = translations[language];
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const plan = {
-      nutritionPlan: `Focus on ${formData.mealPreference} with a carnivore-keto approach based on your ${formData.bodyType} body type and ${formData.fitnessGoal} goal.`,
-      exercisePlan: `${formData.exerciseType} exercises: ${formData.activityLevel} sessions. ${formData.fitnessGoal === 'Build muscle' ? t.advancedNote : t.beginnerNote}`,
-      lifestyleTips: [t.sunExposure, t.sleep, t.avoidJunk]
-    };
-    setResults(plan);
-    setShowQuiz(false);
-    setShowResults(true);
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center">
-      {/* Logo on the left */}
-      <div className="fixed left-4 top-4">
-        <img src={Logo} alt="GrokFit Labs Logo" className="h-32" />
-        <h1 style={{ color: 'green', fontSize: '1.5rem', fontFamily: 'Arial, sans-serif' }}>Grok Fit Labs</h1>
-      </div>
-
-      {/* Main Content */}
-      <div className="mt-20 ml-40 p-6 w-full max-w-2xl">
-        <select
-          onChange={(e) => setLanguage(e.target.value)}
-          className="mb-4 p-2 border rounded"
-        >
-          <option value="en">English</option>
-          <option value="ja">日本語</option>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrokFit Labs - Ancestral Primal Living</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="logo-section">
+      <img src="logo.svg" alt="GrokFit Labs Logo" class="logo">
+      <h1 class="site-title">Grok Fit Labs</h1>
+    </div>
+    <div class="content">
+      <h1>GrokFit Labs: Ancestral Primal Living</h1>
+      <p>Embrace time-tested principles for nutrition, fitness, and wellness adapted to modern life.</p>
+      <form id="fitnessQuiz" class="quiz-form">
+        <h2>Personalized Nutrition & Fitness Quiz</h2>
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
         </select>
-
-        <h1 className="text-3xl font-bold mb-4">{t.title}</h1>
-        <p className="mb-6">{t.subtitle}</p>
-
-        {showQuiz && (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <h2 className="text-2xl font-semibold">{t.quizTitle}</h2>
-            <div>
-              <label>{t.gender}</label>
-              <select name="gender" onChange={handleChange} required className="w-full p-2 border rounded">
-                <option value="">{t.language === 'en' ? 'Select' : '選択'}</option>
-                <option value="male">{t.male}</option>
-                <option value="female">{t.female}</option>
-              </select>
-            </div>
-            <div>
-              <label>{t.age}</label>
-              <input type="number" name="age" onChange={handleChange} required className="w-full p-2 border rounded" />
-            </div>
-            <div>
-              <label>{t.height}</label>
-              <input type="number" name="height" onChange={handleChange} required className="w-full p-2 border rounded" />
-            </div>
-            <div>
-              <label>{t.weight}</label>
-              <input type="number" name="weight" onChange={handleChange} required className="w-full p-2 border rounded" />
-            </div>
-            <div>
-              <label>{t.activityLevel}</label>
-              <select name="activityLevel" onChange={handleChange} required className="w-full p-2 border rounded">
-                <option value="">{t.language === 'en' ? 'Select' : '選択'}</option>
-                {t.activityOptions.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label>{t.bodyType}</label>
-              <select name="bodyType" onChange={handleChange} required className="w-full p-2 border rounded">
-                <option value="">{t.language === 'en' ? 'Select' : '選択'}</option>
-                {t.bodyTypeOptions.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label>{t.fitnessGoal}</label>
-              <select name="fitnessGoal" onChange={handleChange} required className="w-full p-2 border rounded">
-                <option value="">{t.language === 'en' ? 'Select' : '選択'}</option>
-                {t.fitnessGoalOptions.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label>{t.mealPreference}</label>
-              <select name="mealPreference" onChange={handleChange} required className="w-full p-2 border rounded">
-                <option value="">{t.language === 'en' ? 'Select' : '選択'}</option>
-                {t.mealPreferenceOptions.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label>{t.exerciseType}</label>
-              <select name="exerciseType" onChange={handleChange} required className="w-full p-2 border rounded">
-                <option value="">{t.language === 'en' ? 'Select' : '選択'}</option>
-                {t.exerciseTypeOptions.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded">{t.submit}</button>
-          </form>
-        )}
-
-        {showResults && !results && (
-          <div>
-            <p>{t.pay}</p>
-            <button
-              onClick={() => setResults({
-                nutritionPlan: `Focus on ${formData.mealPreference} with a carnivore-keto approach based on your ${formData.bodyType} body type and ${formData.fitnessGoal} goal.`,
-                exercisePlan: `${formData.exerciseType} exercises: ${formData.activityLevel} sessions. ${formData.fitnessGoal === 'Build muscle' ? t.advancedNote : t.beginnerNote}`,
-                lifestyleTips: [t.sunExposure, t.sleep, t.avoidJunk]
-              })}
-              className="bg-green-500 text-white p-2 rounded"
-            >
-              Pay Now
-            </button>
-          </div>
-        )}
-
-        {showResults && results && (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">{t.results}</h2>
-            <div>
-              <h3 className="text-xl font-medium">{t.nutritionPlan}</h3>
-              <p>{results.nutritionPlan}</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-medium">{t.exercisePlan}</h3>
-              <p>{results.exercisePlan}</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-medium">{t.lifestyleTips}</h3>
-              <ul className="list-disc pl-5">
-                {results.lifestyleTips.map((tip, index) => (
-                  <li key={index}>{tip}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
-
-        <footer className="mt-6 text-center text-gray-600">
-          {t.footer}
-        </footer>
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+        <label for="height">Height (cm):</label>
+        <input type="number" id="height" name="height" required>
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" name="weight" required>
+        <label for="activityLevel">Desired Activity Level:</label>
+        <select id="activityLevel" name="activityLevel" required>
+          <option value="">Select</option>
+          <option value="twice">Twice per week</option>
+          <option value="three">3 times per week</option>
+          <option value="four-six">4-6 times per week</option>
+          <option value="daily">Every day</option>
+        </select>
+        <label for="bodyType">Body Type:</label>
+        <select id="bodyType" name="bodyType" required>
+          <option value="">Select</option>
+          <option value="overweight">Overweight</option>
+          <option value="chubby">Chubby/Soft</option>
+          <option value="slim">Slim</option>
+          <option value="skinny">Skinny</option>
+        </select>
+        <label for="fitnessGoal">Fitness Goal:</label>
+        <select id="fitnessGoal" name="fitnessGoal" required>
+          <option value="">Select</option>
+          <option value="tone">Tone up</option>
+          <option value="weight">Reach ideal weight</option>
+          <option value="lean">Get lean</option>
+          <option value="muscle">Build muscle</option>
+        </select>
+        <label for="mealPreference">Meal Preference:</label>
+        <select id="mealPreference" name="mealPreference" required>
+          <option value="">Select</option>
+          <option value="beef">Beef</option>
+          <option value="pork">Pork</option>
+          <option value="lamb">Lamb</option>
+          <option value="fish">Fish</option>
+          <option value="seafood">Seafood</option>
+          <option value="poultry">Poultry</option>
+        </select>
+        <label for="exerciseType">Exercise Type:</label>
+        <select id="exerciseType" name="exerciseType" required>
+          <option value="">Select</option>
+          <option value="bodyweight">Bodyweight</option>
+          <option value="gym">Gym-based</option>
+        </select>
+        <button type="submit">Submit Quiz</button>
+      </form>
+      <div id="results" class="results" style="display: none;">
+        <h2>Your Personalized Plan</h2>
+        <div id="nutritionPlan"></div>
+        <div id="exercisePlan"></div>
+        <div id="lifestyleTips"></div>
       </div>
     </div>
-  );
-};
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </div>
+  <script>
+    document.getElementById('fitnessQuiz').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const plan = {
+        nutritionPlan: `Focus on ${formData.get('mealPreference')} with a carnivore-keto approach based on your ${formData.get('bodyType')} body type and ${formData.get('fitnessGoal')} goal.`,
+        exercisePlan: `${formData.get('exerciseType')} exercises: ${formData.get('activityLevel')} sessions. ${formData.get('fitnessGoal') === 'muscle' ? 'Advanced: Increase reps or add pauses (e.g., hold squat at bottom).' : 'Beginner: Use easier variations (e.g., knee push-ups, assisted squats).'}`,
+        lifestyleTips: [
+          "Get 15-30 minutes of sun exposure daily for vitamin D.",
+          "Aim for 7-9 hours of quality sleep in a dark, cool room.",
+          "Avoid processed foods and artificial lighting after sunset."
+        ]
+      };
+      document.getElementById('nutritionPlan').textContent = plan.nutritionPlan;
+      document.getElementById('exercisePlan').textContent = plan.exercisePlan;
+      document.getElementById('lifestyleTips').innerHTML = plan.lifestyleTips.map(tip => `<p>${tip}</p>`).join('');
+      this.style.display = 'none';
+      document.getElementById('results').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
