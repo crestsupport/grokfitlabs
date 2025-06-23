@@ -13,8 +13,15 @@
       <h1 class="site-title">Grok Fit Labs</h1>
     </div>
     <div class="content">
-      <h1>GrokFit Labs: Ancestral Primal Living</h1>
-      <p>Embrace time-tested principles for nutrition, fitness, and wellness adapted to modern life.</p>
+      <header>
+        <select id="language" class="language-select">
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="zh">中文</option>
+        </select>
+        <h1>GrokFit Labs: Ancestral Primal Living</h1>
+        <p>Embrace time-tested principles for nutrition, fitness, and wellness adapted to modern life.</p>
+      </header>
       <form id="fitnessQuiz" class="quiz-form">
         <h2>Personalized Nutrition & Fitness Quiz</h2>
         <label for="gender">Gender:</label>
@@ -77,11 +84,130 @@
         <div id="exercisePlan"></div>
         <div id="lifestyleTips"></div>
       </div>
+      <footer>
+        <button id="privacyBtn">Privacy Policy</button>
+        <button id="termsBtn">Terms of Use</button>
+        <p>© 2025 GrokFit Labs. All rights reserved.</p>
+      </footer>
     </div>
   </div>
   <script>
+    const translations = {
+      en: {
+        title: "GrokFit Labs: Ancestral Primal Living",
+        subtitle: "Embrace time-tested principles for nutrition, fitness, and wellness adapted to modern life.",
+        quizTitle: "Personalized Nutrition & Fitness Quiz",
+        gender: "Gender",
+        male: "Male",
+        female: "Female",
+        age: "Age",
+        height: "Height (cm)",
+        weight: "Weight (kg)",
+        activityLevel: "Desired Activity Level",
+        activityOptions: ["Twice per week", "3 times per week", "4-6 times per week", "Every day"],
+        bodyType: "Body Type",
+        bodyTypeOptions: ["Overweight", "Chubby/Soft", "Slim", "Skinny"],
+        fitnessGoal: "Fitness Goal",
+        fitnessGoalOptions: ["Tone up", "Reach ideal weight", "Get lean", "Build muscle"],
+        mealPreference: "Meal Preference",
+        mealPreferenceOptions: ["Beef", "Pork", "Lamb", "Fish", "Seafood", "Poultry"],
+        exerciseType: "Exercise Type",
+        exerciseTypeOptions: ["Bodyweight", "Gym-based"],
+        submit: "Submit Quiz",
+        results: "Your Personalized Plan",
+        privacy: "Privacy Policy",
+        privacyContent: "At GrokFit Labs, we prioritize your privacy. We collect personal data such as age, height, and weight to personalize your fitness plans. Data is stored securely and not shared with third parties without consent. For details, contact us at privacy@grokfitlabs.com.",
+        terms: "Terms of Use",
+        termsContent: "By using GrokFit Labs, you agree to our terms. This includes using the quiz for personal use only and paying for premium plans. We reserve the right to modify these terms. For disputes, laws of Delaware, USA, apply. Contact legal@grokfitlabs.com for issues."
+      },
+      ja: {
+        title: "GrokFit Labs：祖先の原始的な生活",
+        subtitle: "現代社会に適応した、時間に裏打ちされた栄養、フィットネス、ウェルネスの原則を取り入れましょう。",
+        quizTitle: "パーソナライズされた栄養＆フィットネスクイズ",
+        gender: "性別",
+        male: "男性",
+        female: "女性",
+        age: "年齢",
+        height: "身長（cm）",
+        weight: "体重（kg）",
+        activityLevel: "希望する活動レベル",
+        activityOptions: ["週に2回", "週に3回", "週に4～6回", "毎日"],
+        bodyType: "体型",
+        bodyTypeOptions: ["過体重", "ぽっちゃり/柔らかい", "スリム", "痩せ型"],
+        fitnessGoal: "フィットネス目標",
+        fitnessGoalOptions: ["引き締める", "理想の体重に達する", "スリムになる", "筋肉をつける"],
+        mealPreference: "食事の好み",
+        mealPreferenceOptions: ["牛肉", "豚肉", "羊肉", "魚", "シーフード", "鶏肉"],
+        exerciseType: "運動の種類",
+        exerciseTypeOptions: ["自重", "ジムベース"],
+        submit: "クイズを提出",
+        results: "あなたのパーソナライズされたプラン",
+        privacy: "プライバシーポリシー",
+        privacyContent: "GrokFit Labsでは、プライバシーを最優先に考えています。年齢、身長、体重などの個人データをフィットネスプランをパーソナライズするために収集します。データは安全に保存され、同意なしに第三者と共有されません。詳細については、privacy@grokfitlabs.comまでご連絡ください。",
+        terms: "利用規約",
+        termsContent: "GrokFit Labsを使用することで、当社の規約に同意したことになります。これは、クイズを個人利用のみに使用し、プレミアムプランを支払うことを含みます。当社はこれらの規約を変更する権利を留保します。紛争の場合、米国のデラウェア州法が適用されます。問題がある場合は、legal@grokfitlabs.comまでご連絡ください。"
+      },
+      zh: {
+        title: "GrokFit Labs：祖先原始生活",
+        subtitle: "拥抱适应现代生活的经过时间验证的营养、健身和健康原则。",
+        quizTitle: "个性化营养与健身测验",
+        gender: "性别",
+        male: "男",
+        female: "女",
+        age: "年龄",
+        height: "身高（厘米）",
+        weight: "体重（公斤）",
+        activityLevel: "期望的活动水平",
+        activityOptions: ["每周两次", "每周三次", "每周4-6次", "每天"],
+        bodyType: "体型",
+        bodyTypeOptions: ["超重", "胖/柔软", "苗条", "瘦"],
+        fitnessGoal: "健身目标",
+        fitnessGoalOptions: ["塑形", "达到理想体重", "变瘦", "增肌"],
+        mealPreference: "饮食偏好",
+        mealPreferenceOptions: ["牛肉", "猪肉", "羊肉", "鱼", "海鲜", "禽肉"],
+        exerciseType: "运动类型",
+        exerciseTypeOptions: ["自重", "健身房"],
+        submit: "提交测验",
+        results: "您的个性化计划",
+        privacy: "隐私政策",
+        privacyContent: "GrokFit Labs高度重视您的隐私。我们收集年龄、身高和体重等个人数据以个性化您的健身计划。数据将安全存储，未经同意不会与第三方共享。详情请联系我们：privacy@grokfitlabs.com。中华人民共和国居民：我们遵守中国相关数据保护法规，确保数据存储在符合当地法律的服务器上。",
+        terms: "使用条款",
+        termsContent: "使用GrokFit Labs即表示您同意我们的条款。这包括仅将测验用于个人用途并支付高级计划费用。我们保留修改这些条款的权利。发生争议时，适用美国特拉华州法律。如有问题，请联系legal@grokfitlabs.com。中华人民共和国居民：本服务受中国法律法规约束，争议适用中国法律。"
+      }
+    };
+
+    document.getElementById('language').addEventListener('change', function(e) {
+      const lang = e.target.value;
+      const t = translations[lang];
+      document.querySelector('header h1').textContent = t.title;
+      document.querySelector('header p').textContent = t.subtitle;
+      document.querySelector('form h2').textContent = t.quizTitle;
+      document.querySelectorAll('label[for="gender"]').forEach(el => el.textContent = t.gender);
+      document.querySelector('select#gender option[value="male"]').textContent = t.male;
+      document.querySelector('select#gender option[value="female"]').textContent = t.female;
+      document.querySelector('label[for="age"]').textContent = t.age;
+      document.querySelector('label[for="height"]').textContent = t.height;
+      document.querySelector('label[for="weight"]').textContent = t.weight;
+      document.querySelector('label[for="activityLevel"]').textContent = t.activityLevel;
+      document.querySelectorAll('select#activityLevel option').forEach((opt, i) => i > 0 && (opt.textContent = t.activityOptions[i - 1]));
+      document.querySelector('label[for="bodyType"]').textContent = t.bodyType;
+      document.querySelectorAll('select#bodyType option').forEach((opt, i) => i > 0 && (opt.textContent = t.bodyTypeOptions[i - 1]));
+      document.querySelector('label[for="fitnessGoal"]').textContent = t.fitnessGoal;
+      document.querySelectorAll('select#fitnessGoal option').forEach((opt, i) => i > 0 && (opt.textContent = t.fitnessGoalOptions[i - 1]));
+      document.querySelector('label[for="mealPreference"]').textContent = t.mealPreference;
+      document.querySelectorAll('select#mealPreference option').forEach((opt, i) => i > 0 && (opt.textContent = t.mealPreferenceOptions[i - 1]));
+      document.querySelector('label[for="exerciseType"]').textContent = t.exerciseType;
+      document.querySelectorAll('select#exerciseType option').forEach((opt, i) => i > 0 && (opt.textContent = t.exerciseTypeOptions[i - 1]));
+      document.querySelector('button[type="submit"]').textContent = t.submit;
+      document.querySelector('#results h2').textContent = t.results;
+      document.getElementById('privacyBtn').textContent = t.privacy;
+      document.getElementById('termsBtn').textContent = t.terms;
+    });
+
     document.getElementById('fitnessQuiz').addEventListener('submit', function(e) {
       e.preventDefault();
+      const lang = document.getElementById('language').value;
+      const t = translations[lang];
       const formData = new FormData(this);
       const plan = {
         nutritionPlan: `Focus on ${formData.get('mealPreference')} with a carnivore-keto approach based on your ${formData.get('bodyType')} body type and ${formData.get('fitnessGoal')} goal.`,
@@ -98,6 +224,19 @@
       this.style.display = 'none';
       document.getElementById('results').style.display = 'block';
     });
+
+    document.getElementById('privacyBtn').addEventListener('click', function() {
+      const lang = document.getElementById('language').value;
+      alert(translations[lang].privacy + "\n\n" + translations[lang].privacyContent);
+    });
+
+    document.getElementById('termsBtn').addEventListener('click', function() {
+      const lang = document.getElementById('language').value;
+      alert(translations[lang].terms + "\n\n" + translations[lang].termsContent);
+    });
+
+    // Trigger initial language load
+    document.getElementById('language').dispatchEvent(new Event('change'));
   </script>
 </body>
 </html>
