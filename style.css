@@ -19,7 +19,9 @@ body {
 }
 
 .logo {
-  height: 30px; /* Reduced from 60px to 30px */
+  height: 5px; /* Reduced to 5px */
+  max-height: 5px; /* Enforces the size */
+  width: auto; /* Keeps the shape */
   margin-bottom: 10px;
 }
 
@@ -38,7 +40,7 @@ body {
 }
 
 header {
-  background-color: #4CAF50; /* Ensures green header */
+  background-color: #4CAF50; /* Green header */
   color: white;
   padding: 15px;
   border-radius: 8px 8px 0 0;
