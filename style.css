@@ -24,7 +24,7 @@ body {
 }
 
 .site-title {
-  color: green;
+  color: #4CAF50;
   font-size: 1.5rem;
   margin: 0;
 }
@@ -105,6 +105,10 @@ footer {
   margin-top: 20px;
   text-align: center;
   color: #666;
+}
+
+footer p {
+  margin-bottom: 10px;
 }
 
 footer button {
